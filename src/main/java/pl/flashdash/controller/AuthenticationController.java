@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.flashdash.dao.request.SignUpRequest;
 import pl.flashdash.dao.request.SignInRequest;
 import pl.flashdash.dao.response.JwtAuthenticationResponse;
-import pl.flashdash.service.AuthenticationService;
+import pl.flashdash.service.security.AuthenticationService;
 
 import lombok.RequiredArgsConstructor;
 

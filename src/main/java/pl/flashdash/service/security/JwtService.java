@@ -1,4 +1,4 @@
-package pl.flashdash.service;
+package pl.flashdash.service.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
