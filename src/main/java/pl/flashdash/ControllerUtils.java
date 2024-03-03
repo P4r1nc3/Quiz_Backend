@@ -9,8 +9,8 @@ import java.time.Instant;
 
 public final class ControllerUtils {
     // 400 Bad Request
-    public static final String BAD_REQUEST_CAUSE = "The request was directed to an endpoint that does not exist.";
-    public static final String BAD_REQUEST_ACTION = "Please verify the URL for any typos and consult the API documentation to find the correct endpoint.";
+    public static final String BAD_REQUEST_CAUSE = "Invalid request syntax or configuration.";
+    public static final String BAD_REQUEST_ACTION = "Review and correct your request, then consult the API documentation.";
 
     // 401 Unauthorized
     public static final String UNAUTHORIZED_CAUSE_EXPIRY = "Your session has expired due to an expired JWT token.";
