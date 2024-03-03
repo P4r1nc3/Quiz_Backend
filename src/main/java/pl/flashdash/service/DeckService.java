@@ -35,11 +35,14 @@ public class DeckService {
                 .orElseThrow(() -> new DeckNotFoundException("Deck not found with id " + deckId + ", for user " + user.getUserId() + "."));
     }
 
-    public Deck updateDeck(Long id, Deck deckDetails) {
-        Deck deck = deckRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Deck not found with id " + id));
+    public Deck updateDeck(Long deckId, Deck deckDetails, User user) {
+        Deck deck = deckRepository.findById(deckId)
+                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id " + deckId + ", for user " + user.getUserId() + "."));
+
         deck.setName(deckDetails.getName());
         deck.setDescription(deckDetails.getDescription());
+        deck.setUpdatedAt(LocalDateTime.now());
+
         return deckRepository.save(deck);
     }
 
