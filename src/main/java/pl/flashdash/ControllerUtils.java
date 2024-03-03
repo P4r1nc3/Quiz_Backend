@@ -17,6 +17,8 @@ public final class ControllerUtils {
     public static final String UNAUTHORIZED_ACTION = "Please provide valid authentication credentials.";
     public static final String UNAUTHORIZED_CAUSE_EXPIRY = "Your session has expired due to an expired JWT token.";
     public static final String UNAUTHORIZED_ACTION_EXPIRY = "Please log in again to renew your session and obtain a new token.";
+    public static final String UNAUTHORIZED_CAUSE_NO_AUTH = "Authentication header is missing.";
+    public static final String UNAUTHORIZED_ACTION_NO_AUTH = "Please include an 'Authorization' header with your request.";
 
     // 404 Not Found
     public static final String NOT_FOUND_CAUSE = "The requested resource was not found.";
