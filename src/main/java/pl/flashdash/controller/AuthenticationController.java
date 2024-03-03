@@ -9,6 +9,7 @@ import pl.flashdash.ControllerUtils;
 import pl.flashdash.dao.request.SignUpRequest;
 import pl.flashdash.dao.request.SignInRequest;
 import pl.flashdash.dao.response.JwtAuthenticationResponse;
+import pl.flashdash.exception.InvalidLoginDetailsException;
 import pl.flashdash.exception.UserAlreadyExistsException;
 import pl.flashdash.service.security.AuthenticationService;
 
@@ -28,6 +29,16 @@ public class AuthenticationController {
     @PostMapping("/signin")
     public ResponseEntity<JwtAuthenticationResponse> signIn(@RequestBody SignInRequest request) {
         return ResponseEntity.ok(authenticationService.signin(request));
+    }
+
+    @ExceptionHandler(InvalidLoginDetailsException.class)
+    public ResponseEntity<Object> handleInvalidLoginDetailsException(InvalidLoginDetailsException ex, HttpServletRequest request) {
+        return ControllerUtils.createErrorResponse(
+                HttpStatus.UNAUTHORIZED,
+                ex.getMessage(),
+                "Check your login credentials and try again.",
+                request
+        );
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
