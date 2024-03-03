@@ -2,7 +2,6 @@ package pl.flashdash.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
@@ -26,7 +25,7 @@ public class DeckController {
         User user = (User) authentication.getPrincipal();
 
         Deck newDeck = deckService.createDeck(deck, user);
-        return new ResponseEntity<>(newDeck, HttpStatus.CREATED);
+        return ResponseEntity.ok(newDeck);
     }
 
     @GetMapping
@@ -35,7 +34,7 @@ public class DeckController {
         User user = (User) authentication.getPrincipal();
 
         List<Deck> decks = deckService.getAllDecks(user);
-        return new ResponseEntity<>(decks, HttpStatus.OK);
+        return ResponseEntity.ok(decks);
     }
 
     @GetMapping("/{deckId}")
@@ -44,7 +43,7 @@ public class DeckController {
         User user = (User) authentication.getPrincipal();
 
         Deck deck = deckService.getDeckById(deckId, user);
-        return new ResponseEntity<>(deck, HttpStatus.OK);
+        return ResponseEntity.ok(deck);
     }
 
     @PutMapping("/{deckId}")
@@ -53,7 +52,7 @@ public class DeckController {
         User user = (User) authentication.getPrincipal();
 
         Deck newDeck = deckService.updateDeck(deckId, deck, user);
-        return new ResponseEntity<>(newDeck, HttpStatus.OK);
+        return ResponseEntity.ok(newDeck);
     }
 
     @DeleteMapping("/{deckId}")

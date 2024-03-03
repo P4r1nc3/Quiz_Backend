@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
@@ -33,4 +35,8 @@ public class Deck {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "deck", cascade = CascadeType.MERGE)
+    private Set<Card> cards = new HashSet<>();
 }
