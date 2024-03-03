@@ -46,4 +46,13 @@ public class DeckController {
         Deck deck = deckService.getDeckById(deckId, user);
         return new ResponseEntity<>(deck, HttpStatus.OK);
     }
+
+    @PutMapping("/{deckId}")
+    public ResponseEntity<Deck> updateDeck(@PathVariable Long deckId, @RequestBody Deck deck) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        Deck newDeck = deckService.updateDeck(deckId, deck, user);
+        return new ResponseEntity<>(newDeck, HttpStatus.OK);
+    }
 }
