@@ -1,11 +1,12 @@
 package pl.flashdash.service;
 
-
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.flashdash.exception.DeckNotFoundException;
 import pl.flashdash.model.Deck;
 import pl.flashdash.model.User;
+import pl.flashdash.repository.CardRepository;
 import pl.flashdash.repository.DeckRepository;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DeckService {
     private final DeckRepository deckRepository;
+    private final CardRepository cardRepository;
 
     public Deck createDeck(Deck deck, User user) {
         // Deck comes to us having only name + desc, we need to specify user based on the token
@@ -45,10 +47,12 @@ public class DeckService {
         return deckRepository.save(deck);
     }
 
+    @Transactional
     public void deleteDeck(Long deckId, User user) {
         Deck deck = deckRepository.findById(deckId)
                 .orElseThrow(() -> new DeckNotFoundException("Deck not found with id " + deckId + ", for user " + user.getUserId() + "."));
 
+        cardRepository.deleteAllByDeck(deck);
         deckRepository.delete(deck);
     }
 }
