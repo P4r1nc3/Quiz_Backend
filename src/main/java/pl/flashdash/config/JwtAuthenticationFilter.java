@@ -3,6 +3,7 @@ package pl.flashdash.config;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.MalformedJwtException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +58,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.setContentType("application/json");
                 response.getWriter().write(errorResponseJson);
                 return;
+            } catch (MalformedJwtException e) {
+                ResponseEntity<Object> errorResponseEntity = ControllerUtils.createErrorResponse(
+                        HttpStatus.UNAUTHORIZED,
+                        ControllerUtils.UNAUTHORIZED_CAUSE,
+                        ControllerUtils.UNAUTHORIZED_ACTION,
+                        request
+                );
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String errorResponseJson = objectMapper.writeValueAsString(errorResponseEntity.getBody());
+
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write(errorResponseJson);
+                return;
             }
+        } else {
+            ResponseEntity<Object> errorResponseEntity = ControllerUtils.createErrorResponse(
+                    HttpStatus.UNAUTHORIZED,
+                    ControllerUtils.UNAUTHORIZED_CAUSE_NO_AUTH,
+                    ControllerUtils.UNAUTHORIZED_ACTION_NO_AUTH,
+                    request
+            );
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            String errorResponseJson = objectMapper.writeValueAsString(errorResponseEntity.getBody());
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write(errorResponseJson);
+            return;
         }
 
         if (StringUtils.isNotEmpty(userEmail)
