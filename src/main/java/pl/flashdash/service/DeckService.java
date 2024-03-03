@@ -3,6 +3,7 @@ package pl.flashdash.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.flashdash.exception.DeckNotFoundException;
 import pl.flashdash.model.Deck;
 import pl.flashdash.model.User;
 import pl.flashdash.repository.DeckRepository;
@@ -29,8 +30,9 @@ public class DeckService {
         return deckRepository.findAllByUser(user);
     }
 
-    public Optional<Deck> getDeckById(Long id, User user) {
-        return deckRepository.findByDeckIdAndUser(id, user);
+    public Deck getDeckById(Long deckId, User user) {
+        return deckRepository.findByDeckIdAndUser(deckId, user)
+                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id " + deckId + ", for user " + user.getUserId() + "."));
     }
 
     public Deck updateDeck(Long id, Deck deckDetails) {
