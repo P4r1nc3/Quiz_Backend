@@ -1,11 +1,13 @@
 package pl.flashdash.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.flashdash.model.Card;
+import pl.flashdash.model.Deck;
 import pl.flashdash.model.User;
 import pl.flashdash.service.CardService;
 
@@ -33,5 +35,32 @@ public class CardController {
 
         List<Card> cards = cardService.getAllCardsInDeck(deckId, user);
         return ResponseEntity.ok(cards);
+    }
+
+    @GetMapping("/{cardId}")
+    public ResponseEntity<Card> getDeck(@PathVariable Long deckId, @PathVariable Long cardId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        Card card = cardService.getCardById(deckId, cardId, user);
+        return ResponseEntity.ok(card);
+    }
+
+    @PutMapping("/{deckId}")
+    public ResponseEntity<Card> updateDeck(@PathVariable Long deckId, @PathVariable Long cardId, @RequestBody Card card) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        Card newCard = cardService.updateCard(deckId, cardId, card, user);
+        return ResponseEntity.ok(newCard);
+    }
+
+    @DeleteMapping("/{deckId}")
+    public ResponseEntity<Void> deleteDeck(@PathVariable Long deckId, @PathVariable Long cardId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        cardService.deleteCard(deckId, cardId, user);
+        return ResponseEntity.noContent().build();
     }
 }
