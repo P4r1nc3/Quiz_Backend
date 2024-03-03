@@ -3,6 +3,7 @@ package pl.flashdash.config;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.MalformedJwtException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

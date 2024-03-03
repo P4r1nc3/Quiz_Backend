@@ -13,6 +13,8 @@ public final class ControllerUtils {
     public static final String BAD_REQUEST_ACTION = "Review and correct your request, then consult the API documentation.";
 
     // 401 Unauthorized
+    public static final String UNAUTHORIZED_CAUSE = "Authentication is required to access this resource.";
+    public static final String UNAUTHORIZED_ACTION = "Please provide valid authentication credentials.";
     public static final String UNAUTHORIZED_CAUSE_EXPIRY = "Your session has expired due to an expired JWT token.";
     public static final String UNAUTHORIZED_ACTION_EXPIRY = "Please log in again to renew your session and obtain a new token.";
 
