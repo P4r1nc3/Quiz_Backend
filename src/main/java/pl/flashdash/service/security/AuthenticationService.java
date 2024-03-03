@@ -1,4 +1,4 @@
-package pl.flashdash.service;
+package pl.flashdash.service.security;
 
 import pl.flashdash.dao.request.SignUpRequest;
 import pl.flashdash.dao.request.SignInRequest;

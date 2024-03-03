@@ -1,4 +1,4 @@
-package pl.flashdash.service.impl;
+package pl.flashdash.service.security.impl;
 
 import pl.flashdash.model.Role;
 import pl.flashdash.model.User;
@@ -6,8 +6,8 @@ import pl.flashdash.dao.request.SignUpRequest;
 import pl.flashdash.dao.request.SignInRequest;
 import pl.flashdash.dao.response.JwtAuthenticationResponse;
 import pl.flashdash.repository.UserRepository;
-import pl.flashdash.service.AuthenticationService;
-import pl.flashdash.service.JwtService;
+import pl.flashdash.service.security.AuthenticationService;
+import pl.flashdash.service.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
