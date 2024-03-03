@@ -1,4 +1,4 @@
-package pl.flashdash.service.impl;
+package pl.flashdash.service.security.impl;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import pl.flashdash.repository.UserRepository;
-import pl.flashdash.service.UserService;
+import pl.flashdash.service.security.UserService;
 
 import lombok.RequiredArgsConstructor;
 
