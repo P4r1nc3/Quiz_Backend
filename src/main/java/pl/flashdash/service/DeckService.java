@@ -46,7 +46,10 @@ public class DeckService {
         return deckRepository.save(deck);
     }
 
-    public void deleteDeck(Long id) {
-        deckRepository.deleteById(id);
+    public void deleteDeck(Long deckId, User user) {
+        Deck deck = deckRepository.findById(deckId)
+                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id " + deckId + ", for user " + user.getUserId() + "."));
+
+        deckRepository.delete(deck);
     }
 }
