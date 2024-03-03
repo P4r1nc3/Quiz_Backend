@@ -37,4 +37,13 @@ public class DeckController {
         List<Deck> decks = deckService.getAllDecks(user);
         return new ResponseEntity<>(decks, HttpStatus.OK);
     }
+
+    @GetMapping("/{deckId}")
+    public ResponseEntity<Deck> getDeck(@PathVariable Long deckId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        Deck deck = deckService.getDeckById(deckId, user);
+        return new ResponseEntity<>(deck, HttpStatus.OK);
+    }
 }
