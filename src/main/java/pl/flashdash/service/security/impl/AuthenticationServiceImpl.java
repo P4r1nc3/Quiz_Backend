@@ -1,5 +1,7 @@
 package pl.flashdash.service.security.impl;
 
+import lombok.SneakyThrows;
+import pl.flashdash.exception.UserAlreadyExistsException;
 import pl.flashdash.model.Role;
 import pl.flashdash.model.User;
 import pl.flashdash.dao.request.SignUpRequest;
@@ -22,12 +24,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
+    @SneakyThrows
     @Override
     public JwtAuthenticationResponse signup(SignUpRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("User with email " + request.getEmail() + " already exists.");
+        }
+
         var user = User.builder().firstName(request.getFirstName()).lastName(request.getLastName())
                 .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER).build();
         userRepository.save(user);
+
         var jwt = jwtService.generateToken(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
