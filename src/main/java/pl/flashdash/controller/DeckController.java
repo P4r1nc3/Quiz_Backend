@@ -55,4 +55,13 @@ public class DeckController {
         Deck newDeck = deckService.updateDeck(deckId, deck, user);
         return new ResponseEntity<>(newDeck, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{deckId}")
+    public ResponseEntity<Void> deleteDeck(@PathVariable Long deckId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        deckService.deleteDeck(deckId, user);
+        return ResponseEntity.noContent().build();
+    }
 }
