@@ -26,7 +26,7 @@ public class DeckController {
         User user = (User) authentication.getPrincipal();
 
         Deck newDeck = deckService.createDeck(deck, user);
-        return new ResponseEntity<>(newDeck, HttpStatus.CREATED);
+        return ResponseEntity.ok(newDeck);
     }
 
     @GetMapping
@@ -35,7 +35,7 @@ public class DeckController {
         User user = (User) authentication.getPrincipal();
 
         List<Deck> decks = deckService.getAllDecks(user);
-        return new ResponseEntity<>(decks, HttpStatus.OK);
+        return ResponseEntity.ok(decks);
     }
 
     @GetMapping("/{deckId}")
@@ -44,7 +44,7 @@ public class DeckController {
         User user = (User) authentication.getPrincipal();
 
         Deck deck = deckService.getDeckById(deckId, user);
-        return new ResponseEntity<>(deck, HttpStatus.OK);
+        return ResponseEntity.ok(deck);
     }
 
     @PutMapping("/{deckId}")
@@ -53,7 +53,7 @@ public class DeckController {
         User user = (User) authentication.getPrincipal();
 
         Deck newDeck = deckService.updateDeck(deckId, deck, user);
-        return new ResponseEntity<>(newDeck, HttpStatus.OK);
+        return ResponseEntity.ok(newDeck);
     }
 
     @DeleteMapping("/{deckId}")
