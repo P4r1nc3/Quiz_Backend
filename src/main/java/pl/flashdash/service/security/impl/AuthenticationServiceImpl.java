@@ -1,6 +1,7 @@
 package pl.flashdash.service.security.impl;
 
 import lombok.SneakyThrows;
+import pl.flashdash.exception.InvalidLoginDetailsException;
 import pl.flashdash.exception.UserAlreadyExistsException;
 import pl.flashdash.model.Role;
 import pl.flashdash.model.User;
@@ -41,12 +42,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
 
+    @SneakyThrows
     @Override
     public JwtAuthenticationResponse signin(SignInRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        } catch (Exception e) {
+            throw new InvalidLoginDetailsException("Invalid login details provided.");
+        }
+
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
+                .orElseThrow(() -> new InvalidLoginDetailsException("Invalid login details provided."));
+
         var jwt = jwtService.generateToken(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
