@@ -8,10 +8,13 @@ import pl.flashdash.dao.request.ErrorResponse;
 import java.time.Instant;
 
 public final class ControllerUtils {
+    // 400 Bad Request
+    public static final String BAD_REQUEST_CAUSE = "The request was directed to an endpoint that does not exist.";
+    public static final String BAD_REQUEST_ACTION = "Please verify the URL for any typos and consult the API documentation to find the correct endpoint.";
+
     // 401 Unauthorized
     public static final String UNAUTHORIZED_CAUSE_EXPIRY = "Your session has expired due to an expired JWT token.";
     public static final String UNAUTHORIZED_ACTION_EXPIRY = "Please log in again to renew your session and obtain a new token.";
-
 
     // 404 Not Found
     public static final String NOT_FOUND_CAUSE = "The requested resource was not found.";
