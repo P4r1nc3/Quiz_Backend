@@ -44,7 +44,7 @@ public class CardController {
         return ResponseEntity.ok(card);
     }
 
-    @PutMapping("/{deckId}")
+    @PutMapping("/{cardId}")
     public ResponseEntity<Card> updateDeck(@PathVariable Long deckId, @PathVariable Long cardId, @RequestBody Card card) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
@@ -53,7 +53,7 @@ public class CardController {
         return ResponseEntity.ok(newCard);
     }
 
-    @DeleteMapping("/{deckId}")
+    @DeleteMapping("/{cardId}")
     public ResponseEntity<Void> deleteDeck(@PathVariable Long deckId, @PathVariable Long cardId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
