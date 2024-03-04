@@ -45,7 +45,6 @@ public class DeckServiceTest {
         testUser = TestUtils.createUser();
         testDeck = TestUtils.createDeck();
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        when(authentication.getPrincipal()).thenReturn(testUser);
     }
 
     @Test
