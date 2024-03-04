@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import pl.flashdash.ControllerUtils;
+import pl.flashdash.utility.ControllerUtils;
 import pl.flashdash.service.security.JwtService;
 import pl.flashdash.service.security.UserService;
 

@@ -1,4 +1,4 @@
-package pl.flashdash.service;
+package pl.flashdash.utility;
 
 import pl.flashdash.model.Question;
 

@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import pl.flashdash.ControllerUtils;
+import pl.flashdash.utility.ControllerUtils;
 import pl.flashdash.dao.request.SignUpRequest;
 import pl.flashdash.dao.request.SignInRequest;
 import pl.flashdash.dao.response.JwtAuthenticationResponse;

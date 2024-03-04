@@ -1,4 +1,4 @@
-package pl.flashdash;
+package pl.flashdash.utility;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
