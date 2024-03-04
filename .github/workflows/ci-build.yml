@@ -55,6 +55,7 @@ jobs:
         run: mvn -B test --file pom.xml
 
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to production
