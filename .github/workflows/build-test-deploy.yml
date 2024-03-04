@@ -2,8 +2,7 @@ name: Build, Test and Deploy
 
 on:
   push:
-    branches:
-      - master
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -56,6 +55,8 @@ jobs:
         run: mvn -B test --file pom.xml
 
   deploy:
+    needs: test
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
