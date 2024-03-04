@@ -6,6 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import pl.flashdash.TestUtils;
 import pl.flashdash.exception.CardNotFoundException;
 import pl.flashdash.model.Card;
@@ -27,6 +29,9 @@ public class CardServiceTest {
     private CardRepository cardRepository;
 
     @Mock
+    private Authentication authentication;
+
+    @Mock
     private DeckService deckService;
 
     @InjectMocks
@@ -41,6 +46,7 @@ public class CardServiceTest {
         testUser = TestUtils.createUser();
         testDeck = TestUtils.createDeck();
         testCard = TestUtils.createCard();
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         when(deckService.getDeckById(anyLong(), any(User.class))).thenReturn(testDeck);
     }
 
