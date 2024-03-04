@@ -38,12 +38,12 @@ public class DeckServiceTest {
     private DeckService deckService;
 
     private User testUser;
-    private Deck inputDeck;
+    private Deck testDeck;
 
     @BeforeEach
     void setup() {
         testUser = TestUtils.createUser();
-        inputDeck = TestUtils.createDeck();
+        testDeck = TestUtils.createDeck();
         SecurityContextHolder.getContext().setAuthentication(authentication);
         when(authentication.getPrincipal()).thenReturn(testUser);
     }
@@ -51,15 +51,15 @@ public class DeckServiceTest {
     @Test
     void createDeck_WhenDeckIsValid_ShouldReturnCreatedDeck() {
         // Given
-        inputDeck.setDeckId(null); // Simulating a new deck creation scenario
-        when(deckRepository.save(any(Deck.class))).thenReturn(inputDeck);
+        testDeck.setDeckId(null); // Simulating a new deck creation scenario
+        when(deckRepository.save(any(Deck.class))).thenReturn(testDeck);
 
         // Act
         Deck savedDeck = deckService.createDeck(new Deck(), testUser);
 
         // Assert
         assertNotNull(savedDeck);
-        assertEquals(inputDeck.getName(), savedDeck.getName());
+        assertEquals(testDeck.getName(), savedDeck.getName());
         verify(deckRepository).save(any(Deck.class));
     }
 
@@ -81,42 +81,42 @@ public class DeckServiceTest {
     @Test
     void getDeckById_WhenDeckExists_ShouldReturnDeck() {
         // Given
-        when(deckRepository.findByDeckIdAndUser(inputDeck.getDeckId(), testUser)).thenReturn(Optional.of(inputDeck));
+        when(deckRepository.findByDeckIdAndUser(testDeck.getDeckId(), testUser)).thenReturn(Optional.of(testDeck));
 
         // Act
-        Deck foundDeck = deckService.getDeckById(inputDeck.getDeckId(), testUser);
+        Deck foundDeck = deckService.getDeckById(testDeck.getDeckId(), testUser);
 
         // Assert
-        assertEquals(inputDeck, foundDeck);
+        assertEquals(testDeck, foundDeck);
     }
 
     @Test
     void updateDeck_WhenDeckExists_ShouldReturnUpdatedDeck() {
         // Given
-        when(deckRepository.findById(inputDeck.getDeckId())).thenReturn(Optional.of(inputDeck));
-        when(deckRepository.save(any(Deck.class))).thenReturn(inputDeck);
+        when(deckRepository.findById(testDeck.getDeckId())).thenReturn(Optional.of(testDeck));
+        when(deckRepository.save(any(Deck.class))).thenReturn(testDeck);
 
         // Act
-        Deck updatedDeck = deckService.updateDeck(inputDeck.getDeckId(), inputDeck, testUser);
+        Deck updatedDeck = deckService.updateDeck(testDeck.getDeckId(), testDeck, testUser);
 
         // Assert
-        assertEquals(inputDeck.getName(), updatedDeck.getName());
-        verify(deckRepository).save(inputDeck);
+        assertEquals(testDeck.getName(), updatedDeck.getName());
+        verify(deckRepository).save(testDeck);
     }
 
     @Test
     void deleteDeck_WhenDeckIsDeleted_ShouldNotThrowException() {
         // Given
-        when(deckRepository.findById(inputDeck.getDeckId())).thenReturn(Optional.of(inputDeck));
+        when(deckRepository.findById(testDeck.getDeckId())).thenReturn(Optional.of(testDeck));
         doNothing().when(cardRepository).deleteAllByDeck(any(Deck.class));
         doNothing().when(deckRepository).delete(any(Deck.class));
 
         // Act
-        assertDoesNotThrow(() -> deckService.deleteDeck(inputDeck.getDeckId(), testUser));
+        assertDoesNotThrow(() -> deckService.deleteDeck(testDeck.getDeckId(), testUser));
 
         // Assert
-        verify(cardRepository).deleteAllByDeck(inputDeck);
-        verify(deckRepository).delete(inputDeck);
+        verify(cardRepository).deleteAllByDeck(testDeck);
+        verify(deckRepository).delete(testDeck);
     }
 
     @Test
