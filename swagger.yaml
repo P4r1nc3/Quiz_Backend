@@ -1,0 +1,858 @@
+openapi: 3.0.0
+info:
+  title: FlashDash API
+  version: 1.0.0
+  description: |
+      The FlashDash API enables users to manage quizzes, including creating, organizing, and accessing decks and flashcards. It supports user authentication, deck creation and flashcard management, offering a comprehensive tool for educational and study purposes.
+
+servers:
+  - url: http://localhost:8080
+    description: DEV server
+  - url: https://flashdash.onrender.com
+    description: PRD server
+
+tags:
+  - name: Auth
+    description: Authentication endpoints
+  - name: Decks
+    description: Deck management endpoints
+  - name: Cards
+    description: Flashcard management within decks endpoints
+
+paths:
+  /auth/signup:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      description: This endpoint is responsible for registering new users in the system. It requires a JSON body with the user's email, and password. Upon successful registration, it returns a JWT token for authentication.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+            example:
+              firstName: John
+              lastName: Smith
+              email: user@example.com
+              password: Password12345
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtAuthenticationResponse'
+              example:
+                token: eyJhb9.eyJzdWIiOiJkc0.yyDdclU2sZGvVLdy
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 400
+                error: Bad Request
+                path: /auth/signup
+                timestamp: '2024-02-03T15:39:43.651626Z'
+                cause: Invalid request syntax or configuration.
+                action: Review and correct your request, then consult the API documentation.
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 409
+                error: Conflict
+                path: /auth/signup
+                timestamp: '2024-02-03T15:39:43.651626Z'
+                cause: User with email user@example.com already exists.
+                action: Try using a different email.
+
+  /auth/signin:
+    post:
+      tags:
+        - Auth
+      summary: Authenticate a user
+      description: This endpoint authenticates users against the provided credentials (email and password) in the request body. If the credentials are valid, it responds with a JWT token that can be used for authenticated requests to other endpoints.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+            example:
+              email: user@example.com
+              password: Password12345
+      responses:
+        '200':
+          description: User signed in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtAuthenticationResponse'
+              example:
+                token: eyJhb9.eyJzdWIiOiJkc0.yyDdclU2sZGvVLdy
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 400
+                error: Bad Request
+                path: /auth/signin
+                timestamp: '2024-02-03T15:39:43.651626Z'
+                cause: Invalid request syntax or configuration.
+                action: Review and correct your request, then consult the API documentation.
+        '401':
+          description: Invalid login details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /auth/signin
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: Invalid login details provided.
+                action: Check your login credentials and try again.
+  
+  /decks:
+    post:
+      tags:
+        - Decks
+      summary: Create a new deck
+      description: This endpoint allows authenticated users to create a new deck. It requires a JSON body with the deck's name and optional description.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeckRequest'
+            example:
+              name: Amphibians
+              description: Deck containing flashcards related to amphibians
+      responses:
+        '200':
+          description: Deck created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeckResponse'
+              example:
+                deckId: 456
+                name: Amphibians
+                description: Deck containing flashcards related to amphibians
+                createdAt: '2024-02-03T16:00:00.000Z'
+                updatedAt: '2024-02-03T16:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 400
+                error: Bad Request
+                path: /decks
+                timestamp: '2024-02-03T15:39:43.651626Z'
+                cause: Invalid request syntax or configuration.
+                action: Review and correct your request, then consult the API documentation.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks
+                timestamp: '2024-02-03T16:00:00.000Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        
+    get:
+      tags:
+        - Decks
+      summary: List decks
+      description: This endpoint allows authenticated users retrieves all decks. It allows users to view the collection of decks.
+      responses:
+        '200':
+          description: A list of decks retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeckResponse'
+              example:
+                - deckId: 456
+                  name: Amphibians
+                  description: Deck containing flashcards related to amphibians
+                  createdAt: '2024-02-03T16:00:00.000Z'
+                  updatedAt: '2024-02-03T16:00:00.000Z'
+                - deckId: 457
+                  name: Reptiles
+                  description: Deck containing flashcards related to reptiles
+                  createdAt: '2024-02-03T17:00:00.000Z'
+                  updatedAt: '2024-02-03T17:30:00.000Z'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+
+  /decks/{deckId}:
+    get:
+      tags:
+        - Decks
+      summary: Get deck details
+      description: This endpoint retrieves the details of a specific deck by its ID.
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the deck.
+      responses:
+        '200':
+          description: Deck details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeckResponse'
+              example:
+                  deckId: 456
+                  name: Amphibians
+                  description: Deck containing flashcards related to amphibians
+                  createdAt: '2024-02-03T16:00:00.000Z'
+                  updatedAt: '2024-02-03T16:00:00.000Z'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        '404':
+          description: Deck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                error: Not Found
+                path: /decks/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: The requested resource was not found.
+                action: Verify the request path and try again.  
+    put:
+      tags:
+        - Decks
+      summary: Update a deck
+      description: This endpoint updates the details of an existing deck. Requires a JSON body with the updated deck name and description.
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the deck to be updated.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeckRequest'
+            example:
+              name: Amphibians
+              description: Deck containing flashcards related to amphibians
+      responses:
+        '200':
+          description: Deck updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeckResponse'
+              example:
+                deckId: 456
+                name: Amphibians
+                description: Deck containing flashcards related to amphibians
+                createdAt: '2024-02-03T16:00:00.000Z'
+                updatedAt: '2024-02-03T16:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 400
+                error: Bad Request
+                path: /decks/123
+                timestamp: '2024-02-03T15:39:43.651626Z'
+                cause: Invalid request syntax or configuration.
+                action: Review and correct your request, then consult the API documentation.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        '404':
+          description: Deck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                error: Not Found
+                path: /decks/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: The requested resource was not found.
+                action: Verify the request path and try again.  
+              
+    delete:
+      tags:
+        - Decks
+      summary: Delete a deck
+      description: This endpoint deletes a specific deck by its ID.
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the deck to be deleted.
+      responses:
+        '204':
+          description: Deck deleted successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        '404':
+          description: Deck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                error: Not Found
+                path: /decks/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: The requested resource was not found.
+                action: Verify the request path and try again.  
+  
+  /decks/{deckId}/cards:
+    post:
+      tags:
+        - Cards
+      summary: Add a new flashcard to a deck
+      description: This endpoint allows authenticated users to add a new flashcard to an existing deck. It requires a JSON body with the flashcard's question, answer.
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the deck to which the flashcard is being added.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardRequest'
+            example:
+              question: What is the largest amphibian?
+              answer: The Chinese giant salamander
+              difficulty: hard
+      responses:
+        '200':
+          description: Flashcard added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+              example:
+                cardId: 789
+                question: What is the largest amphibian?
+                answer: The Chinese giant salamander
+                difficulty: hard
+                createdAt: '2024-02-03T16:30:00.000Z'
+                updatedAt: '2024-02-03T16:30:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 400
+                error: Bad Request
+                path: /decks/123/cards
+                timestamp: '2024-02-03T15:39:43.651626Z'
+                cause: Invalid request syntax or configuration.
+                action: Review and correct your request, then consult the API documentation.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks/123/cards
+                timestamp: '2024-02-03T16:30:00.000Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        '404':
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                error: Not Found
+                path: /decks/123/cards/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: The requested resource was not found.
+                action: Verify the request path and try again.
+       
+    get:
+      tags:
+        - Cards
+      summary: List flashcards in a deck
+      description: This endpoint retrieves all flashcards within a specific deck. It allows users to view the collection of flashcards categorized under a particular deck ID.
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the deck for which flashcards are being listed.
+      responses:
+        '200':
+          description: A list of flashcards retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CardResponse'
+              example:
+                - cardId: 789
+                  question: What is the largest amphibian?
+                  answer: The Chinese giant salamander
+                  difficulty: hard
+                  createdAt: '2024-02-03T16:30:00.000Z'
+                  updatedAt: '2024-02-03T16:30:00.000Z'
+                - cardId: 790
+                  question: What class do amphibians belong to?
+                  answer: Amphibia
+                  difficulty: medium
+                  createdAt: '2024-02-03T17:00:00.000Z'
+                  updatedAt: '2024-02-03T17:00:00.000Z'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks/123/cards
+                timestamp: '2024-02-03T16:30:00.000Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        '404':
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                error: Not Found
+                path: /decks/123/cards/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: The requested resource was not found.
+                action: Verify the request path and try again.
+
+  /decks/{deckId}/cards/{cardId}:
+    get:
+      tags:
+        - Cards
+      summary: Get flashcard details
+      description: This endpoint retrieves the details of a specific flashcard within a deck by its ID.
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the deck containing the flashcard.
+        - in: path
+          name: cardId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the flashcard.
+      responses:
+        '200':
+          description: Flashcard details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+              example:
+                cardId: 789
+                question: What is the largest amphibian?
+                answer: The Chinese giant salamander
+                difficulty: hard
+                createdAt: '2024-02-03T16:30:00.000Z'
+                updatedAt: '2024-02-03T16:30:00.000Z'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks/123/cards/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        '404':
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                error: Not Found
+                path: /decks/123/cards/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: The requested resource was not found.
+                action: Verify the request path and try again.
+                
+    put:
+      tags:
+        - Cards
+      summary: Update a flashcard
+      description: This endpoint updates the details of an existing flashcard within a deck. Requires a JSON body with the updated flashcard details.
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the deck containing the flashcard.
+        - in: path
+          name: cardId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the flashcard to be updated.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardRequest'
+            example:
+              question: What is the largest amphibian?
+              answer: The Chinese giant salamander
+              difficulty: hard
+      responses:
+        '200':
+          description: Flashcard updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+              example:
+                cardId: 789
+                question: What is the largest amphibian?
+                answer: The Chinese giant salamander
+                difficulty: hard
+                createdAt: '2024-02-03T16:30:00.000Z'
+                updatedAt: '2024-02-03T16:30:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 400
+                error: Bad Request
+                path: /decks/123/cards/123
+                timestamp: '2024-02-03T15:39:43.651626Z'
+                cause: Invalid request syntax or configuration.
+                action: Review and correct your request, then consult the API documentation.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks/123/cards/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        '404':
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                error: Not Found
+                path: /decks/123/cards/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: The requested resource was not found.
+                action: Verify the request path and try again.
+                
+    delete:
+      tags:
+        - Cards
+      summary: Delete a flashcard
+      description: This endpoint deletes a specific flashcard within a deck by its ID.
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the deck containing the flashcard.
+        - in: path
+          name: cardId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the flashcard to be deleted.
+      responses:
+        '204':
+          description: Flashcard deleted successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks/123/cards/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        '404':
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                error: Not Found
+                path: /decks/123/cards/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: The requested resource was not found.
+                action: Verify the request path and try again.
+                
+components:
+  schemas:
+    SignUpRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: The email address of the user attempting to sign up. Must be a valid email format.
+        password:
+          type: string
+          format: password
+          description: The password chosen by the user for account creation. Should meet the application's password strength requirements.
+          
+    SignInRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: The user's email address used for signing in.
+        password:
+          type: string
+          format: password
+          description: The user's password for account access. This should be the same password used at sign-up.
+    
+    JwtAuthenticationResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The JSON Web Token (JWT) generated upon successful authentication. This token should be used for authorization in subsequent requests by including it in the request headers.
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status code of the response, indicating the nature of the error.
+        error:
+          type: string
+          description: A brief title or description of the error that occurred.
+        path:
+          type: string
+          description: The request path where the error was encountered.
+        timestamp:
+          type: string
+          format: date-time
+          description: The timestamp when the error occurred, in ISO 8601 format.
+        cause:
+          type: string
+          description: A more detailed explanation of why the error occurred.
+        action:
+          type: string
+          description: Suggested action(s) to resolve the error or to avoid it in future requests.
+    
+    DeckRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: The name of the deck being created.
+        description:
+          type: string
+          description: An optional description of the deck.
+
+    DeckResponse:
+      type: object
+      required:
+        - deckId
+        - name
+      properties:
+        deckId:
+          type: string
+          description: The unique identifier of the deck.
+        name:
+          type: string
+          description: The name of the deck.
+        description:
+          type: string
+          description: The description of the deck, if provided.
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp when the deck was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The timestamp when the deck was last updated.
+
+    CardRequest:
+      type: object
+      required:
+        - question
+        - answer
+      properties:
+        question:
+          type: string
+          description: The question for the flashcard.
+        answer:
+          type: string
+          description: The answer to the flashcard's question.
+        difficulty:
+          type: string
+          description: The difficulty level of the flashcard (e.g., easy, medium, hard).
+
+    CardResponse:
+      type: object
+      required:
+        - cardId
+        - question
+        - answer
+      properties:
+        cardId:
+          type: string
+          description: The unique identifier of the flashcard.
+        question:
+          type: string
+          description: The question of the flashcard.
+        answer:
+          type: string
+          description: The answer to the flashcard's question.
+        difficulty:
+          type: string
+          description: The difficulty level of the flashcard.
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp when the flashcard was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The timestamp when the flashcard was last updated.
