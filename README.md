@@ -12,6 +12,12 @@ Ensure the following are installed on your system:
 - **Maven** 3.6.3 or later
 - **MySQL Database** (MySQL 8 recommended)
 
+## Swagger Documentation
+
+For API documentation and interactive testing, visit the Swagger UI:
+
+[FlashDash Swagger UI](https://p4r1nc3.github.io/FlashDash_Backend/)
+
 ## Setup Instructions
 
 ### Step 1: Clone the Repository
@@ -52,7 +58,7 @@ To configure environment variables in IntelliJ IDEA:
 <img width="1152" alt="4" src="https://github.com/P4r1nc3/FlashDash_Backend/assets/51295585/d9abc578-ba92-4923-9691-ea61a562e6cc">
 
 5. From the `Operating System` section, select `Environment variables.`
-<img width="503" alt="5" src="https://github.com/P4r1nc3/FlashDash_Backend/assets/51295585/c327aad3-6221-48cc-8b08-c89819e769da">
+<img width="503" alt="5" src="https://github.com/P4r1nc3/FlashDash_Backend/assets/51295585/0f71d3a1-d0de-46b3-a132-7ba7551d51dc">
 
 6. In the `Environment variables` input field, enter your variables as key-value pairs, separated by semicolons:
 ```
