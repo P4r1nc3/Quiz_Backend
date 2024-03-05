@@ -12,6 +12,12 @@ Ensure the following are installed on your system:
 - **Maven** 3.6.3 or later
 - **MySQL Database** (MySQL 8 recommended)
 
+## Swagger Documentation
+
+For API documentation and interactive testing, visit the Swagger UI:
+
+[FlashDash Swagger UI](https://p4r1nc3.github.io/FlashDash_Backend/)
+
 ## Setup Instructions
 
 ### Step 1: Clone the Repository
