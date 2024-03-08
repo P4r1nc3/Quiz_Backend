@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> findAllByDeck(Deck deck);
-    Optional<Question> findByDeckAndCardId(Deck deck, Long cardId);
+    Optional<Question> findByDeckAndQuestionId(Deck deck, Long cardId);
     void deleteAllByDeck(Deck deck);
 }
