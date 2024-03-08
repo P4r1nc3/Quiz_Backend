@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import pl.flashdash.exception.DeckNotFoundException;
 import pl.flashdash.model.Deck;
 import pl.flashdash.model.User;
+import pl.flashdash.model.card.CardDeck;
+import pl.flashdash.model.question.QuestionDeck;
 import pl.flashdash.repository.CardRepository;
 import pl.flashdash.repository.DeckRepository;
+import pl.flashdash.repository.QuestionRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,9 +20,9 @@ import java.util.List;
 public class DeckService {
     private final DeckRepository deckRepository;
     private final CardRepository cardRepository;
+    private final QuestionRepository questionRepository;
 
     public Deck createDeck(Deck deck, User user) {
-        // Deck comes to us having only name + desc, we need to specify user based on the token
         deck.setUser(user);
         deck.setCreatedAt(LocalDateTime.now());
         deck.setUpdatedAt(LocalDateTime.now());
@@ -32,13 +35,13 @@ public class DeckService {
     }
 
     public Deck getDeckById(Long deckId, User user) {
-        return deckRepository.findByDeckIdAndUser(deckId, user)
-                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id " + deckId + ", for user " + user.getUserId() + "."));
+        return deckRepository.findByIdAndUser(deckId, user)
+                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id: " + deckId));
     }
 
     public Deck updateDeck(Long deckId, Deck deckDetails, User user) {
-        Deck deck = deckRepository.findById(deckId)
-                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id " + deckId + ", for user " + user.getUserId() + "."));
+        Deck deck = deckRepository.findByIdAndUser(deckId, user)
+                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id: " + deckId));
 
         deck.setName(deckDetails.getName());
         deck.setDescription(deckDetails.getDescription());
@@ -49,10 +52,11 @@ public class DeckService {
 
     @Transactional
     public void deleteDeck(Long deckId, User user) {
-        Deck deck = deckRepository.findById(deckId)
-                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id " + deckId + ", for user " + user.getUserId() + "."));
+        Deck deck = deckRepository.findByIdAndUser(deckId, user)
+                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id: " + deckId));
 
-        cardRepository.deleteAllByDeck(deck);
+        if (deck instanceof CardDeck) cardRepository.deleteAllByDeck(deck);
+        if (deck instanceof QuestionDeck) questionRepository.deleteAllByDeck(deck);
         deckRepository.delete(deck);
     }
 }
