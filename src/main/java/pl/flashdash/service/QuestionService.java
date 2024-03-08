@@ -66,7 +66,8 @@ public class QuestionService {
                 .orElseThrow(() -> new QuestionNotFoundException("Question not found with id: " + questionId));
 
         question.setQuestion(questionDetails.getQuestion());
-        question.setAnswer(questionDetails.getAnswer());
+        question.setCorrectAnswers(questionDetails.getCorrectAnswers());
+        question.setIncorrectAnswers(questionDetails.getIncorrectAnswers());
         question.setDifficulty(questionDetails.getDifficulty());
         question.setUpdatedAt(LocalDateTime.now());
 
