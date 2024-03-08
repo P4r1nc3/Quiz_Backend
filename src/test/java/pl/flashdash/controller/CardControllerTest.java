@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.flashdash.TestUtils;
 import pl.flashdash.exception.CardNotFoundException;
-import pl.flashdash.model.Card;
+import pl.flashdash.model.card.Card;
 import pl.flashdash.model.User;
 import pl.flashdash.service.CardService;
 
