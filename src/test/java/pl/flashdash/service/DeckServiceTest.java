@@ -12,6 +12,7 @@ import pl.flashdash.TestUtils;
 import pl.flashdash.exception.DeckNotFoundException;
 import pl.flashdash.model.Deck;
 import pl.flashdash.model.User;
+import pl.flashdash.model.card.CardDeck;
 import pl.flashdash.repository.CardRepository;
 import pl.flashdash.repository.DeckRepository;
 
@@ -43,18 +44,16 @@ public class DeckServiceTest {
     @BeforeEach
     void setup() {
         testUser = TestUtils.createUser();
-        testDeck = TestUtils.createDeck();
+        testDeck = TestUtils.createCardDeck();
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
-
     @Test
     void createDeck_WhenDeckIsValid_ShouldReturnCreatedDeck() {
         // Given
-        testDeck.setDeckId(null); // Simulating a new deck creation scenario
         when(deckRepository.save(any(Deck.class))).thenReturn(testDeck);
 
         // Act
-        Deck savedDeck = deckService.createDeck(new Deck(), testUser);
+        Deck savedDeck = deckService.createDeck(new CardDeck(), testUser);
 
         // Assert
         assertNotNull(savedDeck);
@@ -65,7 +64,7 @@ public class DeckServiceTest {
     @Test
     void getAllDecks_WhenCalled_ShouldReturnAllDecksForUser() {
         // Given
-        List<Deck> expectedDecks = List.of(TestUtils.createDeck(), TestUtils.createDeck());
+        List<Deck> expectedDecks = List.of(TestUtils.createCardDeck(), TestUtils.createCardDeck());
         when(deckRepository.findAllByUser(testUser)).thenReturn(expectedDecks);
 
         // Act
@@ -80,10 +79,10 @@ public class DeckServiceTest {
     @Test
     void getDeckById_WhenDeckExists_ShouldReturnDeck() {
         // Given
-        when(deckRepository.findByDeckIdAndUser(testDeck.getDeckId(), testUser)).thenReturn(Optional.of(testDeck));
+        when(deckRepository.findByIdAndUser(testDeck.getId(), testUser)).thenReturn(Optional.of(testDeck));
 
         // Act
-        Deck foundDeck = deckService.getDeckById(testDeck.getDeckId(), testUser);
+        Deck foundDeck = deckService.getDeckById(testDeck.getId(), testUser);
 
         // Assert
         assertEquals(testDeck, foundDeck);
@@ -92,11 +91,11 @@ public class DeckServiceTest {
     @Test
     void updateDeck_WhenDeckExists_ShouldReturnUpdatedDeck() {
         // Given
-        when(deckRepository.findById(testDeck.getDeckId())).thenReturn(Optional.of(testDeck));
+        when(deckRepository.findByIdAndUser(testDeck.getId(), testUser)).thenReturn(Optional.of(testDeck));
         when(deckRepository.save(any(Deck.class))).thenReturn(testDeck);
 
         // Act
-        Deck updatedDeck = deckService.updateDeck(testDeck.getDeckId(), testDeck, testUser);
+        Deck updatedDeck = deckService.updateDeck(testDeck.getId(), testDeck, testUser);
 
         // Assert
         assertEquals(testDeck.getName(), updatedDeck.getName());
@@ -106,12 +105,12 @@ public class DeckServiceTest {
     @Test
     void deleteDeck_WhenDeckIsDeleted_ShouldNotThrowException() {
         // Given
-        when(deckRepository.findById(testDeck.getDeckId())).thenReturn(Optional.of(testDeck));
+        when(deckRepository.findByIdAndUser(testDeck.getId(), testUser)).thenReturn(Optional.of(testDeck));
         doNothing().when(cardRepository).deleteAllByDeck(any(Deck.class));
         doNothing().when(deckRepository).delete(any(Deck.class));
 
         // Act
-        assertDoesNotThrow(() -> deckService.deleteDeck(testDeck.getDeckId(), testUser));
+        assertDoesNotThrow(() -> deckService.deleteDeck(testDeck.getId(), testUser));
 
         // Assert
         verify(cardRepository).deleteAllByDeck(testDeck);
@@ -122,7 +121,7 @@ public class DeckServiceTest {
     void getDeckById_WhenDeckDoesNotExist_ShouldThrowDeckNotFoundException() {
         // Given
         Long nonExistentDeckId = 999L;
-        when(deckRepository.findByDeckIdAndUser(nonExistentDeckId, testUser)).thenThrow(new DeckNotFoundException("Deck not found"));
+        when(deckRepository.findByIdAndUser(nonExistentDeckId, testUser)).thenThrow(new DeckNotFoundException("Deck not found"));
 
         // Act & Assert
         assertThrows(DeckNotFoundException.class, () -> deckService.getDeckById(nonExistentDeckId, testUser));
@@ -132,17 +131,17 @@ public class DeckServiceTest {
     void updateDeck_WhenDeckDoesNotExist_ShouldThrowDeckNotFoundException() {
         // Given
         Long nonExistentDeckId = 999L;
-        when(deckRepository.findById(nonExistentDeckId)).thenReturn(Optional.empty());
+        when(deckRepository.findByIdAndUser(nonExistentDeckId, testUser)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(DeckNotFoundException.class, () -> deckService.updateDeck(nonExistentDeckId, new Deck(), testUser));
+        assertThrows(DeckNotFoundException.class, () -> deckService.updateDeck(nonExistentDeckId, new CardDeck(), testUser));
     }
 
     @Test
     void deleteDeck_WhenDeckDoesNotExist_ShouldThrowDeckNotFoundException() {
         // Given
         Long nonExistentDeckId = 999L;
-        when(deckRepository.findById(nonExistentDeckId)).thenReturn(Optional.empty());
+        when(deckRepository.findByIdAndUser(nonExistentDeckId, testUser)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(DeckNotFoundException.class, () -> deckService.deleteDeck(nonExistentDeckId, testUser));
