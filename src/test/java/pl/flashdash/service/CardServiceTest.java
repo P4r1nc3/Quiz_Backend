@@ -10,9 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.flashdash.TestUtils;
 import pl.flashdash.exception.CardNotFoundException;
-import pl.flashdash.model.Card;
-import pl.flashdash.model.Deck;
+import pl.flashdash.model.card.Card;
 import pl.flashdash.model.User;
+import pl.flashdash.model.card.CardDeck;
 import pl.flashdash.repository.CardRepository;
 
 import java.util.List;
@@ -38,13 +38,13 @@ public class CardServiceTest {
     private CardService cardService;
 
     private User testUser;
-    private Deck testDeck;
+    private CardDeck testDeck;
     private Card testCard;
 
     @BeforeEach
     void setup() {
         testUser = TestUtils.createUser();
-        testDeck = TestUtils.createDeck();
+        testDeck = TestUtils.createCardDeck();
         testCard = TestUtils.createCard();
         SecurityContextHolder.getContext().setAuthentication(authentication);
         when(deckService.getDeckById(anyLong(), any(User.class))).thenReturn(testDeck);
@@ -56,7 +56,7 @@ public class CardServiceTest {
         when(cardRepository.save(any(Card.class))).thenReturn(testCard);
 
         // Act
-        Card savedCard = cardService.addCardToDeck(testDeck.getDeckId(), testCard, testUser);
+        Card savedCard = cardService.addCardToDeck(testDeck.getId(), testCard, testUser);
 
         // Assert
         assertNotNull(savedCard);
@@ -71,7 +71,7 @@ public class CardServiceTest {
         when(cardRepository.findAllByDeck(testDeck)).thenReturn(expectedCards);
 
         // Act
-        List<Card> cards = cardService.getAllCardsInDeck(testDeck.getDeckId(), testUser);
+        List<Card> cards = cardService.getAllCardsInDeck(testDeck.getId(), testUser);
 
         // Assert
         assertFalse(cards.isEmpty());
@@ -85,7 +85,7 @@ public class CardServiceTest {
         when(cardRepository.findByDeckAndCardId(testDeck, testCard.getCardId())).thenReturn(Optional.of(testCard));
 
         // Act
-        Card foundCard = cardService.getCardById(testDeck.getDeckId(), testCard.getCardId(), testUser);
+        Card foundCard = cardService.getCardById(testDeck.getId(), testCard.getCardId(), testUser);
 
         // Assert
         assertEquals(testCard, foundCard);
@@ -98,7 +98,7 @@ public class CardServiceTest {
         when(cardRepository.save(any(Card.class))).thenReturn(testCard);
 
         // Act
-        Card updatedCard = cardService.updateCard(testDeck.getDeckId(), testCard.getCardId(), testCard, testUser);
+        Card updatedCard = cardService.updateCard(testDeck.getId(), testCard.getCardId(), testCard, testUser);
 
         // Assert
         assertEquals(testCard.getQuestion(), updatedCard.getQuestion());
@@ -112,7 +112,7 @@ public class CardServiceTest {
         doNothing().when(cardRepository).delete(any(Card.class));
 
         // Act & Assert
-        assertDoesNotThrow(() -> cardService.deleteCard(testDeck.getDeckId(), testCard.getCardId(), testUser));
+        assertDoesNotThrow(() -> cardService.deleteCard(testDeck.getId(), testCard.getCardId(), testUser));
 
         // Assert
         verify(cardRepository).delete(testCard);
@@ -125,7 +125,7 @@ public class CardServiceTest {
         when(cardRepository.findByDeckAndCardId(testDeck, nonExistentCardId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(CardNotFoundException.class, () -> cardService.getCardById(testDeck.getDeckId(), nonExistentCardId, testUser));
+        assertThrows(CardNotFoundException.class, () -> cardService.getCardById(testDeck.getId(), nonExistentCardId, testUser));
     }
 
     @Test
@@ -135,7 +135,7 @@ public class CardServiceTest {
         when(cardRepository.findByDeckAndCardId(testDeck, nonExistentCardId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(CardNotFoundException.class, () -> cardService.updateCard(testDeck.getDeckId(), nonExistentCardId, new Card(), testUser));
+        assertThrows(CardNotFoundException.class, () -> cardService.updateCard(testDeck.getId(), nonExistentCardId, new Card(), testUser));
     }
 
     @Test
@@ -145,6 +145,6 @@ public class CardServiceTest {
         when(cardRepository.findByDeckAndCardId(testDeck, nonExistentCardId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(CardNotFoundException.class, () -> cardService.deleteCard(testDeck.getDeckId(), nonExistentCardId, testUser));
+        assertThrows(CardNotFoundException.class, () -> cardService.deleteCard(testDeck.getId(), nonExistentCardId, testUser));
     }
 }
