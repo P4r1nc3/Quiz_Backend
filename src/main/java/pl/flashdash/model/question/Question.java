@@ -1,4 +1,4 @@
-package pl.flashdash.model;
+package pl.flashdash.model.question;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "cards")
-public class Card {
+@Table(name = "questions")
+public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cardId;
+    private Long questionId;
 
     private String question;
 
@@ -31,5 +31,5 @@ public class Card {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deck_id")
-    private CardDeck deck;
+    private QuestionDeck deck;
 }

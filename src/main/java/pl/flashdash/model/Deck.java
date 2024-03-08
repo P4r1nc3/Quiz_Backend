@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.*;
+import pl.flashdash.model.card.CardDeck;
+import pl.flashdash.model.question.QuestionDeck;
 
 import java.time.LocalDateTime;
 
