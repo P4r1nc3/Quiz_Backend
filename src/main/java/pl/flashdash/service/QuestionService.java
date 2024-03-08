@@ -22,12 +22,7 @@ public class QuestionService {
 
     public Question addQuestionToDeck(Long deckId, Question question, User user) {
         Deck deck = deckService.getDeckById(deckId, user);
-
-        if (!(deck instanceof QuestionDeck)) {
-            throw new WrongDeckInstanceException("Provided deck is not a QuestionDeck");
-        }
-
-        question.setDeck((QuestionDeck) deck);
+        question.setDeck(validateDeckIsQuestionDeck(deck));
         question.setCreatedAt(LocalDateTime.now());
         question.setUpdatedAt(LocalDateTime.now());
 
@@ -36,33 +31,18 @@ public class QuestionService {
 
     public List<Question> getAllQuestionsInDeck(Long deckId, User user) {
         Deck deck = deckService.getDeckById(deckId, user);
-
-        if (!(deck instanceof QuestionDeck)) {
-            throw new WrongDeckInstanceException("Provided deck is not a QuestionDeck");
-        }
-
-        return questionRepository.findAllByDeck(deck);
+        return questionRepository.findAllByDeck(validateDeckIsQuestionDeck(deck));
     }
 
     public Question getQuestionById(Long deckId, Long questionId, User user) {
         Deck deck = deckService.getDeckById(deckId, user);
-
-        if (!(deck instanceof QuestionDeck)) {
-            throw new WrongDeckInstanceException("Provided deck is not a QuestionDeck");
-        }
-
-        return questionRepository.findByDeckAndQuestionId(deck, questionId)
+        return questionRepository.findByDeckAndQuestionId(validateDeckIsQuestionDeck(deck), questionId)
                 .orElseThrow(() -> new QuestionNotFoundException("Question not found with id: " + questionId));
     }
 
     public Question updateQuestion(Long deckId, Long questionId, Question questionDetails, User user) {
         Deck deck = deckService.getDeckById(deckId, user);
-
-        if (!(deck instanceof QuestionDeck)) {
-            throw new WrongDeckInstanceException("Provided deck is not a QuestionDeck");
-        }
-
-        Question question = questionRepository.findByDeckAndQuestionId(deck, questionId)
+        Question question = questionRepository.findByDeckAndQuestionId(validateDeckIsQuestionDeck(deck), questionId)
                 .orElseThrow(() -> new QuestionNotFoundException("Question not found with id: " + questionId));
 
         question.setQuestion(questionDetails.getQuestion());
@@ -76,14 +56,16 @@ public class QuestionService {
 
     public void deleteQuestion(Long deckId, Long questionId, User user) {
         Deck deck = deckService.getDeckById(deckId, user);
-
-        if (!(deck instanceof QuestionDeck)) {
-            throw new WrongDeckInstanceException("Provided deck is not a QuestionDeck");
-        }
-
-        Question question = questionRepository.findByDeckAndQuestionId(deck, questionId)
+        Question question = questionRepository.findByDeckAndQuestionId(validateDeckIsQuestionDeck(deck), questionId)
                 .orElseThrow(() -> new QuestionNotFoundException("Question not found with id: " + questionId));
 
         questionRepository.delete(question);
+    }
+
+    private QuestionDeck validateDeckIsQuestionDeck(Deck deck) {
+        if (!(deck instanceof QuestionDeck)) {
+            throw new WrongDeckInstanceException("Provided deck is not a QuestionDeck");
+        }
+        return (QuestionDeck) deck;
     }
 }
