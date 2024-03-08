@@ -141,6 +141,7 @@ paths:
             example:
               name: Amphibians
               description: Deck containing flashcards related to amphibians
+              deckType: CARD
       responses:
         '200':
           description: Deck created successfully
@@ -152,6 +153,7 @@ paths:
                 deckId: 456
                 name: Amphibians
                 description: Deck containing flashcards related to amphibians
+                deckType: CARD
                 createdAt: '2024-02-03T16:00:00.000Z'
                 updatedAt: '2024-02-03T16:00:00.000Z'
         '400':
@@ -199,11 +201,13 @@ paths:
                 - deckId: 456
                   name: Amphibians
                   description: Deck containing flashcards related to amphibians
+                  deckType: CARD
                   createdAt: '2024-02-03T16:00:00.000Z'
                   updatedAt: '2024-02-03T16:00:00.000Z'
                 - deckId: 457
                   name: Reptiles
                   description: Deck containing flashcards related to reptiles
+                  deckType: CARD
                   createdAt: '2024-02-03T17:00:00.000Z'
                   updatedAt: '2024-02-03T17:30:00.000Z'
         '401':
@@ -244,6 +248,7 @@ paths:
                 deckId: 456
                 name: Amphibians
                 description: Deck containing flashcards related to amphibians
+                deckType: CARD
                 createdAt: '2024-02-03T16:00:00.000Z'
                 updatedAt: '2024-02-03T16:00:00.000Z'
         '401':
@@ -293,6 +298,7 @@ paths:
             example:
               name: Amphibians
               description: Deck containing flashcards related to amphibians
+              deckType: CARD
       responses:
         '200':
           description: Deck updated successfully
@@ -304,6 +310,7 @@ paths:
                 deckId: 456
                 name: Amphibians
                 description: Deck containing flashcards related to amphibians
+                deckType: CARD
                 createdAt: '2024-02-03T16:00:00.000Z'
                 updatedAt: '2024-02-03T16:00:00.000Z'
         '400':
@@ -1107,42 +1114,6 @@ components:
           type: string
           description: Suggested action(s) to resolve the error or to avoid it in future requests.
 
-    DeckRequest:
-      type: object
-      required:
-        - name
-      properties:
-        name:
-          type: string
-          description: The name of the deck being created.
-        description:
-          type: string
-          description: An optional description of the deck.
-
-    DeckResponse:
-      type: object
-      required:
-        - deckId
-        - name
-      properties:
-        deckId:
-          type: string
-          description: The unique identifier of the deck.
-        name:
-          type: string
-          description: The name of the deck.
-        description:
-          type: string
-          description: The description of the deck, if provided.
-        createdAt:
-          type: string
-          format: date-time
-          description: The timestamp when the deck was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: The timestamp when the deck was last updated.
-
     CardRequest:
       type: object
       required:
@@ -1186,6 +1157,52 @@ components:
           type: string
           format: date-time
           description: The timestamp when the flashcard was last updated.
+
+    DeckRequest:
+      type: object
+      required:
+        - name
+        - deckType
+      properties:
+        name:
+          type: string
+          description: The name of the deck being created.
+        description:
+          type: string
+          description: An optional description of the deck.
+        deckType:
+          type: string
+          enum: [ CARD, QUESTION ]
+          description: The type of the deck, either "CARD" or "QUESTION".
+
+    DeckResponse:
+      type: object
+      required:
+        - deckId
+        - name
+        - deckType
+      properties:
+        deckId:
+          type: string
+          description: The unique identifier of the deck.
+        name:
+          type: string
+          description: The name of the deck.
+        description:
+          type: string
+          description: The description of the deck, if provided.
+        deckType:
+          type: string
+          enum: [ CARD, QUESTION ]
+          description: The type of the deck, either "CARD" or "QUESTION".
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp when the deck was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The timestamp when the deck was last updated.
 
     QuestionRequest:
       type: object
