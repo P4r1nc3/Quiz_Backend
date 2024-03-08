@@ -30,12 +30,12 @@ public class DeckService {
 
     public Deck getDeckById(Long deckId, User user) {
         return deckRepository.findByIdAndUser(deckId, user)
-                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id " + deckId + ", for user " + user.getUserId() + "."));
+                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id: " + deckId));
     }
 
     public Deck updateDeck(Long deckId, Deck deckDetails, User user) {
         Deck deck = deckRepository.findById(deckId)
-                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id " + deckId + ", for user " + user.getUserId() + "."));
+                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id: " + deckId));
 
         deck.setName(deckDetails.getName());
         deck.setDescription(deckDetails.getDescription());
@@ -47,7 +47,7 @@ public class DeckService {
     @Transactional
     public void deleteDeck(Long deckId, User user) {
         Deck deck = deckRepository.findById(deckId)
-                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id " + deckId + ", for user " + user.getUserId() + "."));
+                .orElseThrow(() -> new DeckNotFoundException("Deck not found with id: " + deckId));
 
         deckRepository.delete(deck);
     }
