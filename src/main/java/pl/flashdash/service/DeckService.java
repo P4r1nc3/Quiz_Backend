@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.flashdash.exception.DeckNotFoundException;
-import pl.flashdash.exception.WrongDeckInstanceException;
 import pl.flashdash.model.Deck;
 import pl.flashdash.model.User;
 import pl.flashdash.model.card.CardDeck;
