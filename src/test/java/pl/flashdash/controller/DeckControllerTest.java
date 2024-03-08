@@ -14,6 +14,7 @@ import pl.flashdash.TestUtils;
 import pl.flashdash.exception.DeckNotFoundException;
 import pl.flashdash.model.Deck;
 import pl.flashdash.model.User;
+import pl.flashdash.model.card.CardDeck;
 import pl.flashdash.service.DeckService;
 
 import java.util.List;
@@ -44,12 +45,12 @@ public class DeckControllerTest {
     }
 
     @Test
-    public void createDeck_WhenDeckIsValid_ShouldReturnCreatedDeck() {
+    public void createCardDeck_WhenDeckIsValid_ShouldReturnCreatedDeck() {
         // Given
-        Deck inputDeck = TestUtils.createDeck();
-        inputDeck.setDeckId(null); // Simulating a new deck creation scenario
-        Deck savedDeck = TestUtils.createDeck();
-        when(deckService.createDeck(any(Deck.class), eq(testUser))).thenReturn(savedDeck);
+        CardDeck inputDeck = TestUtils.createCardDeck();
+        inputDeck.setId(null);
+        CardDeck savedDeck = TestUtils.createCardDeck();
+        when(deckService.createDeck(any(CardDeck.class), eq(testUser))).thenReturn(savedDeck);
 
         // Act
         ResponseEntity<Deck> response = sut.createDeck(inputDeck);
@@ -62,7 +63,7 @@ public class DeckControllerTest {
     @Test
     public void getAllDecks_WhenCalled_ShouldReturnAllDecksForUser() {
         // Given
-        List<Deck> expectedDecks = List.of(TestUtils.createDeck(), TestUtils.createDeck());
+        List<Deck> expectedDecks = List.of(TestUtils.createCardDeck(), TestUtils.createQuestionDeck());
         when(deckService.getAllDecks(eq(testUser))).thenReturn(expectedDecks);
 
         // Act
@@ -77,11 +78,11 @@ public class DeckControllerTest {
     @Test
     public void getDeck_WhenDeckExists_ShouldReturnDeck() {
         // Given
-        Deck expectedDeck = TestUtils.createDeck();
-        when(deckService.getDeckById(eq(expectedDeck.getDeckId()), eq(testUser))).thenReturn(expectedDeck);
+        Deck expectedDeck = TestUtils.createCardDeck();
+        when(deckService.getDeckById(eq(expectedDeck.getId()), eq(testUser))).thenReturn(expectedDeck);
 
         // Act
-        ResponseEntity<Deck> response = sut.getDeck(expectedDeck.getDeckId());
+        ResponseEntity<Deck> response = sut.getDeck(expectedDeck.getId());
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -91,11 +92,11 @@ public class DeckControllerTest {
     @Test
     public void updateDeck_WhenDeckExists_ShouldReturnUpdatedDeck() {
         // Given
-        Deck existingDeck = TestUtils.createDeck();
-        when(deckService.updateDeck(eq(existingDeck.getDeckId()), any(Deck.class), eq(testUser))).thenReturn(existingDeck);
+        Deck existingDeck = TestUtils.createCardDeck();
+        when(deckService.updateDeck(eq(existingDeck.getId()), any(Deck.class), eq(testUser))).thenReturn(existingDeck);
 
         // Act
-        ResponseEntity<Deck> response = sut.updateDeck(existingDeck.getDeckId(), existingDeck);
+        ResponseEntity<Deck> response = sut.updateDeck(existingDeck.getId(), existingDeck);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -129,13 +130,13 @@ public class DeckControllerTest {
     @Test
     public void updateDeck_WhenDeckDoesNotExist_ShouldThrowDeckNotFoundException() {
         // Given
-        Deck nonExistentDeck = TestUtils.createDeck();
-        nonExistentDeck.setDeckId(999L);
-        when(deckService.updateDeck(eq(nonExistentDeck.getDeckId()), any(Deck.class), eq(testUser)))
+        Deck nonExistentDeck = TestUtils.createCardDeck();
+        nonExistentDeck.setId(999L);
+        when(deckService.updateDeck(eq(nonExistentDeck.getId()), any(Deck.class), eq(testUser)))
                 .thenThrow(new DeckNotFoundException("Deck not found"));
 
         // Act & Assert
-        assertThrows(DeckNotFoundException.class, () -> sut.updateDeck(nonExistentDeck.getDeckId(), nonExistentDeck));
+        assertThrows(DeckNotFoundException.class, () -> sut.updateDeck(nonExistentDeck.getId(), nonExistentDeck));
     }
 
     @Test

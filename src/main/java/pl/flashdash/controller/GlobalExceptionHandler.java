@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import pl.flashdash.ControllerUtils;
 import pl.flashdash.exception.CardNotFoundException;
 import pl.flashdash.exception.DeckNotFoundException;
+import pl.flashdash.exception.QuestionNotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -24,6 +25,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CardNotFoundException.class)
     public ResponseEntity<Object> handleCardNotFoundException(CardNotFoundException ex, HttpServletRequest request) {
+        return ControllerUtils.createErrorResponse(
+                HttpStatus.NOT_FOUND,
+                ControllerUtils.NOT_FOUND_CAUSE,
+                ControllerUtils.NOT_FOUND_ACTION,
+                request
+        );
+    }
+
+    @ExceptionHandler(QuestionNotFoundException.class)
+    public ResponseEntity<Object> handleQuestionNotFoundException(QuestionNotFoundException ex, HttpServletRequest request) {
         return ControllerUtils.createErrorResponse(
                 HttpStatus.NOT_FOUND,
                 ControllerUtils.NOT_FOUND_CAUSE,

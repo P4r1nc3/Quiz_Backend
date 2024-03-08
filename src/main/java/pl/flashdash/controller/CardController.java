@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import pl.flashdash.model.Card;
+import pl.flashdash.model.card.Card;
 import pl.flashdash.model.User;
 import pl.flashdash.service.CardService;
 
@@ -36,7 +36,7 @@ public class CardController {
     }
 
     @GetMapping("/{cardId}")
-    public ResponseEntity<Card> getDeck(@PathVariable Long deckId, @PathVariable Long cardId) {
+    public ResponseEntity<Card> getCard(@PathVariable Long deckId, @PathVariable Long cardId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
@@ -45,7 +45,7 @@ public class CardController {
     }
 
     @PutMapping("/{cardId}")
-    public ResponseEntity<Card> updateDeck(@PathVariable Long deckId, @PathVariable Long cardId, @RequestBody Card card) {
+    public ResponseEntity<Card> updateCard(@PathVariable Long deckId, @PathVariable Long cardId, @RequestBody Card card) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
@@ -54,7 +54,7 @@ public class CardController {
     }
 
     @DeleteMapping("/{cardId}")
-    public ResponseEntity<Void> deleteDeck(@PathVariable Long deckId, @PathVariable Long cardId) {
+    public ResponseEntity<Void> deleteCard(@PathVariable Long deckId, @PathVariable Long cardId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
