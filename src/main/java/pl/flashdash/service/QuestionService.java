@@ -3,6 +3,7 @@ package pl.flashdash.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.flashdash.exception.QuestionNotFoundException;
+import pl.flashdash.exception.WrongDeckInstanceException;
 import pl.flashdash.model.Question;
 import pl.flashdash.model.QuestionDeck;
 import pl.flashdash.model.Deck;
@@ -23,7 +24,7 @@ public class QuestionService {
         Deck deck = deckService.getDeckById(deckId, user);
 
         if (!(deck instanceof QuestionDeck)) {
-            throw new IllegalArgumentException("Provided deck is not a QuestionDeck");
+            throw new WrongDeckInstanceException("Provided deck is not a QuestionDeck");
         }
 
         question.setDeck((QuestionDeck) deck);
@@ -37,7 +38,7 @@ public class QuestionService {
         Deck deck = deckService.getDeckById(deckId, user);
 
         if (!(deck instanceof QuestionDeck)) {
-            throw new IllegalArgumentException("Provided deck is not a QuestionDeck");
+            throw new WrongDeckInstanceException("Provided deck is not a QuestionDeck");
         }
 
         return questionRepository.findAllByDeck((QuestionDeck) deck);
@@ -47,7 +48,7 @@ public class QuestionService {
         Deck deck = deckService.getDeckById(deckId, user);
 
         if (!(deck instanceof QuestionDeck)) {
-            throw new IllegalArgumentException("Provided deck is not a QuestionDeck");
+            throw new WrongDeckInstanceException("Provided deck is not a QuestionDeck");
         }
 
         return questionRepository.findByDeckAndQuestionId((QuestionDeck) deck, questionId)
@@ -58,7 +59,7 @@ public class QuestionService {
         Deck deck = deckService.getDeckById(deckId, user);
 
         if (!(deck instanceof QuestionDeck)) {
-            throw new IllegalArgumentException("Provided deck is not a QuestionDeck");
+            throw new WrongDeckInstanceException("Provided deck is not a QuestionDeck");
         }
 
         Question question = questionRepository.findByDeckAndQuestionId((QuestionDeck) deck, questionId)
@@ -76,7 +77,7 @@ public class QuestionService {
         Deck deck = deckService.getDeckById(deckId, user);
 
         if (!(deck instanceof QuestionDeck)) {
-            throw new IllegalArgumentException("Provided deck is not a QuestionDeck");
+            throw new WrongDeckInstanceException("Provided deck is not a QuestionDeck");
         }
 
         Question question = questionRepository.findByDeckAndQuestionId((QuestionDeck) deck, questionId)
