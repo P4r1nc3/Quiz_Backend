@@ -45,7 +45,7 @@ public class QuestionController {
     }
 
     @PutMapping("/{questionId}")
-    public ResponseEntity<Question> updateDeck(@PathVariable Long deckId, @PathVariable Long questionId, @RequestBody Question question) {
+    public ResponseEntity<Question> updateQuestion(@PathVariable Long deckId, @PathVariable Long questionId, @RequestBody Question question) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
@@ -54,7 +54,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{questionId}")
-    public ResponseEntity<Void> deleteDeck(@PathVariable Long deckId, @PathVariable Long questionId) {
+    public ResponseEntity<Void> deleteQuestion(@PathVariable Long deckId, @PathVariable Long questionId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
