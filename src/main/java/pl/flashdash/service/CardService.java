@@ -22,12 +22,7 @@ public class CardService {
 
     public Card addCardToDeck(Long deckId, Card card, User user) {
         Deck deck = deckService.getDeckById(deckId, user);
-
-        if (!(deck instanceof CardDeck)) {
-            throw new WrongDeckInstanceException("Provided deck is not a CardDeck");
-        }
-
-        card.setDeck((CardDeck) deck);
+        card.setDeck(validateDeckIsCardDeck(deck));
         card.setCreatedAt(LocalDateTime.now());
         card.setUpdatedAt(LocalDateTime.now());
 
@@ -36,33 +31,18 @@ public class CardService {
 
     public List<Card> getAllCardsInDeck(Long deckId, User user) {
         Deck deck = deckService.getDeckById(deckId, user);
-
-        if (!(deck instanceof CardDeck)) {
-            throw new WrongDeckInstanceException("Provided deck is not a CardDeck");
-        }
-
-        return cardRepository.findAllByDeck(deck);
+        return cardRepository.findAllByDeck(validateDeckIsCardDeck(deck));
     }
 
     public Card getCardById(Long deckId, Long cardId, User user) {
         Deck deck = deckService.getDeckById(deckId, user);
-
-        if (!(deck instanceof CardDeck)) {
-            throw new WrongDeckInstanceException("Provided deck is not a CardDeck");
-        }
-
-        return cardRepository.findByDeckAndCardId(deck, cardId)
+        return cardRepository.findByDeckAndCardId(validateDeckIsCardDeck(deck), cardId)
                 .orElseThrow(() -> new CardNotFoundException("Card not found with id: " + cardId));
     }
 
     public Card updateCard(Long deckId, Long cardId, Card cardDetails, User user) {
         Deck deck = deckService.getDeckById(deckId, user);
-
-        if (!(deck instanceof CardDeck)) {
-            throw new WrongDeckInstanceException("Provided deck is not a CardDeck");
-        }
-
-        Card card = cardRepository.findByDeckAndCardId(deck, cardId)
+        Card card = cardRepository.findByDeckAndCardId(validateDeckIsCardDeck(deck), cardId)
                 .orElseThrow(() -> new CardNotFoundException("Card not found with id: " + cardId));
 
         card.setQuestion(cardDetails.getQuestion());
@@ -75,14 +55,16 @@ public class CardService {
 
     public void deleteCard(Long deckId, Long cardId, User user) {
         Deck deck = deckService.getDeckById(deckId, user);
-
-        if (!(deck instanceof CardDeck)) {
-            throw new WrongDeckInstanceException("Provided deck is not a CardDeck");
-        }
-
-        Card card = cardRepository.findByDeckAndCardId(deck, cardId)
+        Card card = cardRepository.findByDeckAndCardId(validateDeckIsCardDeck(deck), cardId)
                 .orElseThrow(() -> new CardNotFoundException("Card not found with id: " + cardId));
 
         cardRepository.delete(card);
+    }
+
+    private CardDeck validateDeckIsCardDeck(Deck deck) {
+        if (!(deck instanceof CardDeck)) {
+            throw new WrongDeckInstanceException("Provided deck is not a CardDeck");
+        }
+        return (CardDeck) deck;
     }
 }
