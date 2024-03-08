@@ -1,8 +1,9 @@
-package pl.flashdash.model;
+package pl.flashdash.model.card;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import pl.flashdash.model.Deck;
 
 import java.util.Set;
 
