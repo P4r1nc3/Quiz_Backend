@@ -84,7 +84,7 @@ public class CardControllerTest {
         when(cardService.getCardById(eq(deckId), eq(cardId), eq(testUser))).thenReturn(expectedCard);
 
         // Act
-        ResponseEntity<Card> response = sut.getDeck(deckId, cardId);
+        ResponseEntity<Card> response = sut.getCard(deckId, cardId);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -100,7 +100,7 @@ public class CardControllerTest {
         when(cardService.updateCard(eq(deckId), eq(cardId), any(Card.class), eq(testUser))).thenReturn(updatedCard);
 
         // Act
-        ResponseEntity<Card> response = sut.updateDeck(deckId, cardId, updatedCard);
+        ResponseEntity<Card> response = sut.updateCard(deckId, cardId, updatedCard);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -115,7 +115,7 @@ public class CardControllerTest {
         doNothing().when(cardService).deleteCard(eq(deckId), eq(cardId), eq(testUser));
 
         // Act
-        ResponseEntity<Void> response = sut.deleteDeck(deckId, cardId);
+        ResponseEntity<Void> response = sut.deleteCard(deckId, cardId);
 
         // Assert
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
@@ -130,7 +130,7 @@ public class CardControllerTest {
                 .thenThrow(new CardNotFoundException("Card not found"));
 
         // Act & Assert
-        assertThrows(CardNotFoundException.class, () -> sut.getDeck(deckId, nonExistentCardId));
+        assertThrows(CardNotFoundException.class, () -> sut.getCard(deckId, nonExistentCardId));
     }
 
     @Test
@@ -143,7 +143,7 @@ public class CardControllerTest {
                 .thenThrow(new CardNotFoundException("Card not found"));
 
         // Act & Assert
-        assertThrows(CardNotFoundException.class, () -> sut.updateDeck(deckId, nonExistentCardId, nonExistentCard));
+        assertThrows(CardNotFoundException.class, () -> sut.updateCard(deckId, nonExistentCardId, nonExistentCard));
     }
 
     @Test
@@ -154,6 +154,6 @@ public class CardControllerTest {
         doThrow(new CardNotFoundException("Card not found")).when(cardService).deleteCard(eq(deckId), eq(nonExistentCardId), eq(testUser));
 
         // Act & Assert
-        assertThrows(CardNotFoundException.class, () -> sut.deleteDeck(deckId, nonExistentCardId));
+        assertThrows(CardNotFoundException.class, () -> sut.deleteCard(deckId, nonExistentCardId));
     }
 }
