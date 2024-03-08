@@ -3,6 +3,7 @@ package pl.flashdash.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.flashdash.exception.CardNotFoundException;
+import pl.flashdash.exception.WrongDeckInstanceException;
 import pl.flashdash.model.Card;
 import pl.flashdash.model.CardDeck;
 import pl.flashdash.model.Deck;
@@ -23,7 +24,7 @@ public class CardService {
         Deck deck = deckService.getDeckById(deckId, user);
 
         if (!(deck instanceof CardDeck)) {
-            throw new IllegalArgumentException("Provided deck is not a CardDeck");
+            throw new WrongDeckInstanceException("Provided deck is not a CardDeck");
         }
 
         card.setDeck((CardDeck) deck);
@@ -37,7 +38,7 @@ public class CardService {
         Deck deck = deckService.getDeckById(deckId, user);
 
         if (!(deck instanceof CardDeck)) {
-            throw new IllegalArgumentException("Provided deck is not a CardDeck");
+            throw new WrongDeckInstanceException("Provided deck is not a CardDeck");
         }
 
         return cardRepository.findAllByDeck((CardDeck) deck);
@@ -47,7 +48,7 @@ public class CardService {
         Deck deck = deckService.getDeckById(deckId, user);
 
         if (!(deck instanceof CardDeck)) {
-            throw new IllegalArgumentException("Provided deck is not a CardDeck");
+            throw new WrongDeckInstanceException("Provided deck is not a CardDeck");
         }
 
         return cardRepository.findByDeckAndCardId((CardDeck) deck, cardId)
@@ -58,7 +59,7 @@ public class CardService {
         Deck deck = deckService.getDeckById(deckId, user);
 
         if (!(deck instanceof CardDeck)) {
-            throw new IllegalArgumentException("Provided deck is not a CardDeck");
+            throw new WrongDeckInstanceException("Provided deck is not a CardDeck");
         }
 
         Card card = cardRepository.findByDeckAndCardId((CardDeck) deck, cardId)
@@ -76,7 +77,7 @@ public class CardService {
         Deck deck = deckService.getDeckById(deckId, user);
 
         if (!(deck instanceof CardDeck)) {
-            throw new IllegalArgumentException("Provided deck is not a CardDeck");
+            throw new WrongDeckInstanceException("Provided deck is not a CardDeck");
         }
 
         Card card = cardRepository.findByDeckAndCardId((CardDeck) deck, cardId)
