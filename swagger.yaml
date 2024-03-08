@@ -3,7 +3,7 @@ info:
   title: FlashDash API
   version: 1.0.0
   description: |
-      The FlashDash API enables users to manage quizzes, including creating, organizing, and accessing decks and flashcards. It supports user authentication, deck creation and flashcard management, offering a comprehensive tool for educational and study purposes.
+    The FlashDash API enables users to manage quizzes, including creating, organizing, and accessing decks and flashcards. It supports user authentication, deck creation and flashcard management, offering a comprehensive tool for educational and study purposes.
 
 servers:
   - url: http://localhost:8080
@@ -18,6 +18,8 @@ tags:
     description: Deck management endpoints
   - name: Cards
     description: Flashcard management within decks endpoints
+  - name: Questions
+    description: Questions management within decks endpoints
 
 paths:
   /auth/signup:
@@ -178,7 +180,7 @@ paths:
                 timestamp: '2024-02-03T16:00:00.000Z'
                 cause: Authentication is required to access this resource.
                 action: Please provide valid authentication credentials.
-        
+
     get:
       tags:
         - Decks
@@ -239,11 +241,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/DeckResponse'
               example:
-                  deckId: 456
-                  name: Amphibians
-                  description: Deck containing flashcards related to amphibians
-                  createdAt: '2024-02-03T16:00:00.000Z'
-                  updatedAt: '2024-02-03T16:00:00.000Z'
+                deckId: 456
+                name: Amphibians
+                description: Deck containing flashcards related to amphibians
+                createdAt: '2024-02-03T16:00:00.000Z'
+                updatedAt: '2024-02-03T16:00:00.000Z'
         '401':
           description: Unauthorized
           content:
@@ -269,7 +271,7 @@ paths:
                 path: /decks/123
                 timestamp: '2024-02-03T15:40:19.518757Z'
                 cause: The requested resource was not found.
-                action: Verify the request path and try again.  
+                action: Verify the request path and try again.
     put:
       tags:
         - Decks
@@ -342,8 +344,8 @@ paths:
                 path: /decks/123
                 timestamp: '2024-02-03T15:40:19.518757Z'
                 cause: The requested resource was not found.
-                action: Verify the request path and try again.  
-              
+                action: Verify the request path and try again.
+
     delete:
       tags:
         - Decks
@@ -384,7 +386,7 @@ paths:
                 path: /decks/123
                 timestamp: '2024-02-03T15:40:19.518757Z'
                 cause: The requested resource was not found.
-                action: Verify the request path and try again.  
+                action: Verify the request path and try again.
   
   /decks/{deckId}/cards:
     post:
@@ -450,7 +452,7 @@ paths:
                 cause: Authentication is required to access this resource.
                 action: Please provide valid authentication credentials.
         '404':
-          description: Card not found
+          description: Deck not found
           content:
             application/json:
               schema:
@@ -458,11 +460,11 @@ paths:
               example:
                 status: 404
                 error: Not Found
-                path: /decks/123/cards/123
+                path: /decks/123/cards
                 timestamp: '2024-02-03T15:40:19.518757Z'
                 cause: The requested resource was not found.
                 action: Verify the request path and try again.
-       
+
     get:
       tags:
         - Cards
@@ -511,7 +513,7 @@ paths:
                 cause: Authentication is required to access this resource.
                 action: Please provide valid authentication credentials.
         '404':
-          description: Card not found
+          description: Deck not found
           content:
             application/json:
               schema:
@@ -519,7 +521,7 @@ paths:
               example:
                 status: 404
                 error: Not Found
-                path: /decks/123/cards/123
+                path: /decks/123/cards
                 timestamp: '2024-02-03T15:40:19.518757Z'
                 cause: The requested resource was not found.
                 action: Verify the request path and try again.
@@ -583,7 +585,7 @@ paths:
                 timestamp: '2024-02-03T15:40:19.518757Z'
                 cause: The requested resource was not found.
                 action: Verify the request path and try again.
-                
+
     put:
       tags:
         - Cards
@@ -665,7 +667,7 @@ paths:
                 timestamp: '2024-02-03T15:40:19.518757Z'
                 cause: The requested resource was not found.
                 action: Verify the request path and try again.
-                
+
     delete:
       tags:
         - Cards
@@ -713,7 +715,335 @@ paths:
                 timestamp: '2024-02-03T15:40:19.518757Z'
                 cause: The requested resource was not found.
                 action: Verify the request path and try again.
-                
+
+  /decks/{deckId}/questions:
+    post:
+      tags:
+        - Questions
+      summary: Add a new question to a deck
+      description: This endpoint allows authenticated users to add a new question to an existing deck. It requires a JSON body with the question's details including correct and incorrect answers.
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the deck to which the question is being added.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionRequest'
+            example:
+              question: What is the capital city of France?
+              correctAnswers: [ "Paris" ]
+              incorrectAnswers: [ "London", "Berlin", "Madrid" ]
+              difficulty: easy
+      responses:
+        '200':
+          description: Question added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionResponse'
+              example:
+                questionId: 123
+                question: What is the capital city of France?
+                correctAnswers: [ "Paris" ]
+                incorrectAnswers: [ "London", "Berlin", "Madrid" ]
+                difficulty: easy
+                createdAt: '2024-03-09T12:00:00.000Z'
+                updatedAt: '2024-03-09T12:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 400
+                error: Bad Request
+                path: /decks/123/questions
+                timestamp: '2024-02-03T15:39:43.651626Z'
+                cause: Invalid request syntax or configuration.
+                action: Review and correct your request, then consult the API documentation.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks/123/questions
+                timestamp: '2024-02-03T16:30:00.000Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        '404':
+          description: Deck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                error: Not Found
+                path: /decks/123/questions
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: The requested resource was not found.
+                action: Verify the request path and try again.
+
+    get:
+      tags:
+        - Questions
+      summary: List questions in a deck
+      description: This endpoint retrieves all questions within a specific deck.
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the deck for which questions are being listed.
+      responses:
+        '200':
+          description: A list of questions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuestionResponse'
+              example:
+                - questionId: 123
+                  question: What is the capital city of France?
+                  correctAnswers: [ "Paris" ]
+                  incorrectAnswers: [ "London", "Berlin", "Madrid" ]
+                  difficulty: medium
+                  createdAt: '2024-03-09T12:00:00.000Z'
+                  updatedAt: '2024-03-09T12:00:00.000Z'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks/123/questions
+                timestamp: '2024-02-03T16:30:00.000Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        '404':
+          description: Deck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                error: Not Found
+                path: /decks/123/questions
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: The requested resource was not found.
+                action: Verify the request path and try again.
+
+  /decks/{deckId}/questions/{questionId}:
+    get:
+      tags:
+        - Questions
+      summary: Get question details
+      description: This endpoint retrieves the details of a specific question within a deck by its ID.
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the deck containing the question.
+        - in: path
+          name: questionId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the question.
+      responses:
+        '200':
+          description: Question details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionResponse'
+              example:
+                questionId: 123
+                question: What is the capital city of France?
+                correctAnswers: [ "Paris" ]
+                incorrectAnswers: [ "London", "Berlin", "Madrid" ]
+                difficulty: easy
+                createdAt: '2024-03-09T12:00:00.000Z'
+                updatedAt: '2024-03-09T12:00:00.000Z'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks/123/questions/123
+                timestamp: '2024-02-03T16:30:00.000Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        '404':
+          description: Question not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                error: Not Found
+                path: /decks/123/questions/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: The requested resource was not found.
+                action: Verify the request path and try again.
+
+    put:
+      tags:
+        - Questions
+      summary: Update a question
+      description: This endpoint updates the details of an existing question within a deck.
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the deck containing the question.
+        - in: path
+          name: questionId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the question to be updated.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionRequest'
+            example:
+              question: What is the capital city of France?
+              correctAnswers: [ "Paris" ]
+              incorrectAnswers: [ "London", "Berlin", "Madrid" ]
+              difficulty: easy
+      responses:
+        '200':
+          description: Question updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionResponse'
+              example:
+                questionId: 123
+                question: What is the capital city of France?
+                correctAnswers: [ "Paris" ]
+                incorrectAnswers: [ "London", "Berlin", "Madrid" ]
+                difficulty: easy
+                createdAt: '2024-03-09T12:00:00.000Z'
+                updatedAt: '2024-03-09T12:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 400
+                error: Bad Request
+                path: /decks/123/questions/123
+                timestamp: '2024-02-03T15:39:43.651626Z'
+                cause: Invalid request syntax or configuration.
+                action: Review and correct your request, then consult the API documentation.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks/123/questions/123
+                timestamp: '2024-02-03T16:30:00.000Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        '404':
+          description: Question not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                error: Not Found
+                path: /decks/123/questions/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: The requested resource was not found.
+                action: Verify the request path and try again.
+
+    delete:
+      tags:
+        - Questions
+      summary: Delete a question
+      description: This endpoint deletes an existing question within a deck.
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the deck containing the question.
+        - in: path
+          name: questionId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the question to be updated.
+      responses:
+        '204':
+          description: Question deleted successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                error: Unauthorized
+                path: /decks/123/questions/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: Authentication is required to access this resource.
+                action: Please provide valid authentication credentials.
+        '404':
+          description: Question not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                error: Not Found
+                path: /decks/123/questions/123
+                timestamp: '2024-02-03T15:40:19.518757Z'
+                cause: The requested resource was not found.
+                action: Verify the request path and try again.
+
 components:
   schemas:
     SignUpRequest:
@@ -730,7 +1060,7 @@ components:
           type: string
           format: password
           description: The password chosen by the user for account creation. Should meet the application's password strength requirements.
-          
+
     SignInRequest:
       type: object
       required:
@@ -745,7 +1075,7 @@ components:
           type: string
           format: password
           description: The user's password for account access. This should be the same password used at sign-up.
-    
+
     JwtAuthenticationResponse:
       type: object
       properties:
@@ -776,7 +1106,7 @@ components:
         action:
           type: string
           description: Suggested action(s) to resolve the error or to avoid it in future requests.
-    
+
     DeckRequest:
       type: object
       required:
@@ -856,3 +1186,63 @@ components:
           type: string
           format: date-time
           description: The timestamp when the flashcard was last updated.
+
+    QuestionRequest:
+      type: object
+      required:
+        - question
+        - correctAnswers
+        - incorrectAnswers
+      properties:
+        question:
+          type: string
+          description: The question text.
+        correctAnswers:
+          type: array
+          items:
+            type: string
+          description: A list of correct answers for the question.
+        incorrectAnswers:
+          type: array
+          items:
+            type: string
+          description: A list of incorrect answers for the question.
+        difficulty:
+          type: string
+          description: The difficulty level of the question (e.g., easy, medium, hard).
+
+    QuestionResponse:
+      type: object
+      required:
+        - questionId
+        - question
+        - correctAnswers
+        - incorrectAnswers
+      properties:
+        questionId:
+          type: string
+          description: The unique identifier of the question.
+        question:
+          type: string
+          description: The text of the question.
+        correctAnswers:
+          type: array
+          items:
+            type: string
+          description: A list of correct answers for the question.
+        incorrectAnswers:
+          type: array
+          items:
+            type: string
+          description: A list of incorrect answers for the question.
+        difficulty:
+          type: string
+          description: The difficulty level of the question.
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp when the question was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The timestamp when the question was last updated.
