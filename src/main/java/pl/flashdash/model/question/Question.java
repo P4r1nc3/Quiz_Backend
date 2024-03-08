@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -20,7 +21,9 @@ public class Question {
 
     private String question;
 
-    private String answer;
+    private List<String> correctAnswers;
+
+    private List<String> incorrectAnswers;
 
     private String difficulty;
 
