@@ -23,12 +23,12 @@ public class DeckService {
     private final CardRepository cardRepository;
     private final QuestionRepository questionRepository;
 
-    public Deck createDeck(Deck request, User user) {
-        request.setUser(user);
-        request.setCreatedAt(LocalDateTime.now());
-        request.setUpdatedAt(LocalDateTime.now());
+    public Deck createDeck(Deck deck, User user) {
+        deck.setUser(user);
+        deck.setCreatedAt(LocalDateTime.now());
+        deck.setUpdatedAt(LocalDateTime.now());
 
-        return deckRepository.save(request);
+        return deckRepository.save(deck);
     }
 
     public List<Deck> getAllDecks(User user) {
