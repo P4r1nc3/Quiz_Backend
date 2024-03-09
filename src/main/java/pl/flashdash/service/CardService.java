@@ -63,7 +63,7 @@ public class CardService {
 
     private CardDeck validateDeckIsCardDeck(Deck deck) {
         if (!(deck instanceof CardDeck)) {
-            throw new WrongDeckInstanceException("Provided deck is not a CardDeck");
+            throw new WrongDeckInstanceException("Provided deck is not a CARD deck.");
         }
         return (CardDeck) deck;
     }
