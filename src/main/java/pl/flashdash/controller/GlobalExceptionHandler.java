@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import pl.flashdash.ControllerUtils;
-import pl.flashdash.exception.CardNotFoundException;
-import pl.flashdash.exception.DeckNotFoundException;
-import pl.flashdash.exception.DeckTypeChangeException;
-import pl.flashdash.exception.QuestionNotFoundException;
+import pl.flashdash.exception.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -50,6 +47,16 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
                 ControllerUtils.BAD_REQUEST_DECK_TYPE_CHANGE_ACTION,
+                request
+        );
+    }
+
+    @ExceptionHandler(WrongDeckInstanceException.class)
+    public ResponseEntity<Object> handleWrongDeckInstanceException(WrongDeckInstanceException ex, HttpServletRequest request) {
+        return ControllerUtils.createErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                ControllerUtils.BAD_REQUEST_INVALID_DECK_TYPE_ACTION,
                 request
         );
     }
