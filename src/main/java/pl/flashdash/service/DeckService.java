@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.flashdash.exception.DeckNotFoundException;
+import pl.flashdash.exception.DeckTypeChangeException;
 import pl.flashdash.model.Deck;
 import pl.flashdash.model.User;
 import pl.flashdash.model.card.CardDeck;
@@ -42,6 +43,10 @@ public class DeckService {
     public Deck updateDeck(Long deckId, Deck deckDetails, User user) {
         Deck deck = deckRepository.findByIdAndUser(deckId, user)
                 .orElseThrow(() -> new DeckNotFoundException("Deck not found with id: " + deckId));
+
+        if (!deck.getClass().equals(deckDetails.getClass())) {
+            throw new DeckTypeChangeException("Changing deckType is not allowed.");
+        }
 
         deck.setName(deckDetails.getName());
         deck.setDescription(deckDetails.getDescription());
