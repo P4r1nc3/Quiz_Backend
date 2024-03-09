@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,9 +22,11 @@ public class Question {
 
     private String question;
 
-    private List<String> correctAnswers;
+    @Builder.Default
+    private List<String> correctAnswers = new ArrayList<>();
 
-    private List<String> incorrectAnswers;
+    @Builder.Default
+    private List<String> incorrectAnswers = new ArrayList<>();
 
     private String difficulty;
 
