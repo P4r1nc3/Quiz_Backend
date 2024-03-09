@@ -64,7 +64,7 @@ public class QuestionService {
 
     private QuestionDeck validateDeckIsQuestionDeck(Deck deck) {
         if (!(deck instanceof QuestionDeck)) {
-            throw new WrongDeckInstanceException("Provided deck is not a QuestionDeck");
+            throw new WrongDeckInstanceException("Provided deck is not a QUESTION deck.");
         }
         return (QuestionDeck) deck;
     }
