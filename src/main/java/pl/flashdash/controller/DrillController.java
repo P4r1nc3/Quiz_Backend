@@ -1,12 +1,13 @@
 package pl.flashdash.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.flashdash.model.question.Question;
 import pl.flashdash.utility.ControllerUtils;
-import pl.flashdash.model.QuestionDrill;
 import pl.flashdash.utility.DrillParser;
 
 import java.nio.file.Files;
@@ -23,9 +24,9 @@ public class DrillController {
             Path tempFile = Files.createTempFile(null, null);
             file.transferTo(tempFile);
 
-            List<QuestionDrill> questionDrills = DrillParser.parseDrillFile(tempFile);
+            List<Question> questions = DrillParser.parseDrillFile(tempFile);
 
-            if (questionDrills.isEmpty()) {
+            if (questions.isEmpty()) {
                 return ControllerUtils.createErrorResponse(
                         HttpStatus.BAD_REQUEST,
                         ControllerUtils.BAD_REQUEST_CAUSE,
@@ -34,8 +35,9 @@ public class DrillController {
                 );
             }
 
-            return ResponseEntity.ok(questionDrills);
-        } catch (Exception e) {
+            return ResponseEntity.ok(questions);
+        }
+        catch (Exception e) {
             return ControllerUtils.createErrorResponse(
                     HttpStatus.BAD_REQUEST,
                     ControllerUtils.BAD_REQUEST_CAUSE,
