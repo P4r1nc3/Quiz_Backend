@@ -11,6 +11,8 @@ public final class ControllerUtils {
     // 400 Bad Request
     public static final String BAD_REQUEST_CAUSE = "Invalid request syntax or configuration.";
     public static final String BAD_REQUEST_ACTION = "Review and correct your request, then consult the API documentation.";
+    public static final String BAD_REQUEST_DECK_TYPE_CHANGE_ACTION = "Ensure that the deckType remains unchanged when updating a deck.";
+    public static final String BAD_REQUEST_INVALID_DECK_TYPE_ACTION = "Ensure you are trying to add an item to the proper type of deck.";
 
     // 401 Unauthorized
     public static final String UNAUTHORIZED_CAUSE = "Authentication is required to access this resource.";
