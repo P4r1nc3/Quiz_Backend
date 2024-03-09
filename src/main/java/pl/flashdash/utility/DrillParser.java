@@ -1,6 +1,6 @@
 package pl.flashdash.utility;
 
-import pl.flashdash.model.Question;
+import pl.flashdash.model.QuestionDrill;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,57 +15,57 @@ public class DrillParser {
     private static final Pattern CORRECT_ANSWER_PATTERN = Pattern.compile("^>>>([a-d])\\) (.+)");
     private static final Pattern ANSWER_PATTERN = Pattern.compile("^([a-d])\\) (.+)");
 
-    public static List<Question> parseDrillFile(Path filePath) throws IOException {
+    public static List<QuestionDrill> parseDrillFile(Path filePath) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
-        List<Question> questions = new ArrayList<>();
-        Question currentQuestion = null;
+        List<QuestionDrill> questionDrills = new ArrayList<>();
+        QuestionDrill currentQuestionDrill = null;
 
         for (String line : lines) {
             line = line.trim();
             if (line.isEmpty()) continue;
 
             if (line.startsWith(">>>")) {
-                processCorrectAnswer(currentQuestion, line);
+                processCorrectAnswer(currentQuestionDrill, line);
             } else if (line.matches("^[a-d]\\) .+")) {
-                processAnswer(currentQuestion, line);
+                processAnswer(currentQuestionDrill, line);
             } else {
-                currentQuestion = processQuestion(questions, currentQuestion, line);
+                currentQuestionDrill = processQuestion(questionDrills, currentQuestionDrill, line);
             }
         }
 
-        if (currentQuestion != null && isValidQuestion(currentQuestion)) {
-            questions.add(currentQuestion);
+        if (currentQuestionDrill != null && isValidQuestion(currentQuestionDrill)) {
+            questionDrills.add(currentQuestionDrill);
         }
 
-        return questions;
+        return questionDrills;
     }
 
-    private static void processCorrectAnswer(Question question, String line) {
-        if (question == null) return;
+    private static void processCorrectAnswer(QuestionDrill questionDrill, String line) {
+        if (questionDrill == null) return;
         Matcher matcher = CORRECT_ANSWER_PATTERN.matcher(line);
         if (matcher.matches()) {
-            question.getCorrectAnswers().add(matcher.group(2).trim());
+            questionDrill.getCorrectAnswers().add(matcher.group(2).trim());
         }
     }
 
-    private static void processAnswer(Question question, String line) {
-        if (question == null) return;
+    private static void processAnswer(QuestionDrill questionDrill, String line) {
+        if (questionDrill == null) return;
         Matcher matcher = ANSWER_PATTERN.matcher(line);
         if (matcher.matches()) {
-            question.getIncorrectAnswers().add(matcher.group(2).trim());
+            questionDrill.getIncorrectAnswers().add(matcher.group(2).trim());
         }
     }
 
-    private static Question processQuestion(List<Question> questions, Question currentQuestion, String line) {
-        if (currentQuestion != null && isValidQuestion(currentQuestion)) {
-            questions.add(currentQuestion);
+    private static QuestionDrill processQuestion(List<QuestionDrill> questionDrills, QuestionDrill currentQuestionDrill, String line) {
+        if (currentQuestionDrill != null && isValidQuestion(currentQuestionDrill)) {
+            questionDrills.add(currentQuestionDrill);
         }
-        Question newQuestion = new Question();
-        newQuestion.setQuestion(line);
-        return newQuestion;
+        QuestionDrill newQuestionDrill = new QuestionDrill();
+        newQuestionDrill.setQuestion(line);
+        return newQuestionDrill;
     }
 
-    private static boolean isValidQuestion(Question question) {
-        return question.getQuestion() != null && !question.getCorrectAnswers().isEmpty();
+    private static boolean isValidQuestion(QuestionDrill questionDrill) {
+        return questionDrill.getQuestion() != null && !questionDrill.getCorrectAnswers().isEmpty();
     }
 }

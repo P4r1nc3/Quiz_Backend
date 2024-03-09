@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Question {
+public class QuestionDrill {
     private String question;
     private List<String> correctAnswers = new ArrayList<>();
     private List<String> incorrectAnswers = new ArrayList<>();
