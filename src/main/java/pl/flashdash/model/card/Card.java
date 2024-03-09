@@ -1,11 +1,8 @@
-package pl.flashdash.model;
+package pl.flashdash.model.card;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -21,11 +18,6 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cardId;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "deck_id")
-    private Deck deck;
-
     private String question;
 
     private String answer;
@@ -35,4 +27,9 @@ public class Card {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deck_id")
+    private CardDeck deck;
 }
